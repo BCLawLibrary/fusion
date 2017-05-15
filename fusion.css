@@ -1,0 +1,275 @@
+h4 
+{
+	margin:0px;
+}
+
+.int-wrap.school-wrap.nohero header.school-header .nav-wrap {
+    background-image: none;
+}
+.int-wrap.school-wrap.nohero .bulk-wrap>main {
+    margin-top: 210px;
+}
+.dataTables_info h3, .dataTables_info p 
+{
+	display: inline;
+	
+}
+.dataTables_info h3
+{
+	margin-right:50px;
+	
+}
+
+.dataTables_wrapper
+{
+	padding-top:20px;
+	
+}
+
+
+#faculty 
+{
+	width:50%;
+	float:left;
+	max-width:700px;    
+	min-height: 700px;
+}
+#faculty tr 
+{
+	display:inline-block;
+	
+}
+#faculty td
+{
+	height:200px;
+	width:200px;
+}
+	
+#faculty img
+{
+	height:150px;
+}
+
+#faculty table a
+{
+	display:block;
+	
+}
+
+#courses, #publications, #experiential
+{
+	width:40%;
+	float:right;
+}
+.closedInfo 
+{
+	display:none;
+	
+}
+
+
+
+
+
+#courses td, #experiential td {
+	display:block;
+	
+}
+
+.namePub 
+{
+	margin:0;
+}
+
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+	width:100%;
+    display: none;
+    position: relative;
+	width:100%
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    padding: 12px 16px;
+    z-index: 1;
+}
+
+#myInput {
+	width:350px;
+	
+}
+
+#fusion .dropdown-content ul {
+	padding:0px;
+	column-count: auto !important;
+    list-style-position: inside;
+    margin-right:10px;
+}
+
+#areaSearch {
+	padding:10px;
+}
+
+
+#areaSearch li, span.all, a.more, a.fewer {
+	cursor: pointer; 
+}
+
+
+span.all
+{
+	position: relative;
+    left: -20px;
+}
+
+
+
+.details-control, .details-controlExp {
+    background: url('http://www.bc.edu/content/dam/bc1/schools/law/js/images/details_open.png') no-repeat left center;
+    cursor: pointer;
+}
+.answer-tab, .empty-control, .answer-tabExp, .empty-controlExp {padding-left:20px; display:inline-block;}
+.open {background: url('http://www.bc.edu/content/dam/bc1/schools/law/js/images/details_close.png') no-repeat left center;}
+
+
+#fusion #publications .display.dataTable a {
+	display:block;	
+}
+
+
+
+@media screen and (max-width: 700px) {
+
+	#faculty 
+	{
+		width:100%;
+		min-height: 0px;
+	}
+	
+	#courses, #publications, #experiential
+	{
+		width:100%;
+		float:left;
+	}
+	div.dataTables_info h3
+	{
+	cursor: pointer; 
+	}
+	.tableInfo
+	{
+		display:none;
+	}
+	.closedInfo{
+		display:inline;
+	}
+
+	
+ #fusion #controls {
+ padding: 0px;
+	}
+
+
+  #fusion #controls .dropdown {
+  	position:fixed;
+  	top:109px;
+  	left:0px;
+	padding: 5px 0px 0px;
+    margin-left: 15px;
+  	width: 88%;
+    max-width: 400px;
+  	z-index:22;
+  	background-color:#fff;
+  	}
+  	#fusion .dropdown-content {
+  	max-height: 125px;
+  	overflow-y:scroll;
+	display:none;
+  	}
+	
+	.dropdownOpen {
+		padding-left:2px;
+		margin-left:2px;
+		
+	}
+	
+	#fusion #controls .dropdown-content ul {
+		padding-bottom:0px;
+		padding-top:0px;
+		margin-bottom:0px;
+	}
+  	
+  	.dataInfo:after, .closedInfo p:after {
+  	content: "\e604";
+    color: #ce0303;
+    font-family: icomoon;
+    padding: 6px;
+    top: 1px;
+    position: relative;
+    height: 30px;
+    margin: 5px 8px 0 5px;
+
+  	}
+  	
+  	.closedInfo p:after {
+  	content: "\e603";
+  	}
+	
+	#fusion .dataTables_wrapper {
+		margin-bottom:0px;
+		padding-top:0px;
+		
+	}
+	
+	#fusion #faculty {
+
+	}
+	
+	#fusion .right-col {
+		margin-top:0px;
+	}
+	
+	#fusion thead {
+		display:none;
+	}
+	
+	table.dataTable {
+		margin-bottom:20px;
+	}
+	
+	h2.fusionHeader {
+		
+		margin-top:120px !important;
+		
+	}
+	
+	.int-wrap h3.fusionHeader:after {
+		width:0%;
+	}
+	
+	.int-wrap h3:after, .int-wrap h3:before {
+		width:100%;
+		
+	}
+	
+	
+  	
+  	html,body{
+    -webkit-overflow-scrolling : touch !important;
+    overflow: auto !important;
+    height: 100% !important;
+	}
+	
+
+	
+}
+  	
+  }
+  
+ 
+  
+  }
