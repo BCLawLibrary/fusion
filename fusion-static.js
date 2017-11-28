@@ -181,14 +181,15 @@ _fnCallbackFire:u,_fnLengthOverflow:Sa,_fnRenderer:Na,_fnDataSource:y,_fnRowAttr
 
 
 
+
 //FUSION STARTS HERE
 
 //Get any search parameters from the URL
-function getURLParameter(name) {
-  return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||""
-}
 
-	myKey = getURLParameter('key').replace("and","&");
+
+	myKey = $('h1.mainTitle').text();
+	
+
 	
 function searchMenu() {
 	$('span.dropdownOpen').click(function() {
@@ -265,7 +266,7 @@ function searchMenu() {
 		var facultyTable = $('#facultyData').DataTable( {
 			"dom": 'it',//remove default search input
 			 "language": {
-				"info": "<h3>Faculty</h3><span class='tableInfo'><p class='dataInfo'>Showing _END_ of _TOTAL_ </p><a  id='facultyMore' class='more' tabindex='0' >All faculty</a><a id='facultyFewer' class='fewer' tabindex='0' >Fewer faculty</a></span><span class='closedInfo'><p>_TOTAL_ results</p></span>",
+				"info": "<div class='info-inner'><h3>Faculty</h3><span class='tableInfo'><p class='dataInfo'>Showing _START_ to _END_ of _TOTAL_ </p><a  id='facultyPrev' class='prev' tabindex='0' ></a><a  id='facultyNext' class='more' tabindex='0' ></a><a id='facultyFirst' class='first' tabindex='0' >Back to Start</a></span></div>",
 				"infoFiltered": "",
 				"infoEmpty" : "",
 				"zeroRecords" : ""
@@ -274,9 +275,9 @@ function searchMenu() {
 			"url": "/content/dam/bc1/schools/law/js/fusion/facultyData.json",
 			"dataSrc":""
 			},
-			"deferRender": true,
+			//"deferRender": true,
 			"order": [[8,'asc'], [6,'asc']],
-			"pageLength": 6,
+			"pageLength": 3,
 			  "columns": [
 				{ "data": "Image"},
 				{ "data": "DisplayName" },
@@ -309,7 +310,7 @@ function searchMenu() {
 				$("#facultyData tr:nth-child("+child+")").find('td').append('<a class="facultyName">'+data[i].DisplayName+'</a>');
 				$("#facultyData tr:nth-child("+child+")").find('a').attr('href',data[i].URL);
 				$("#facultyData tr:nth-child("+child+")").find('img').attr('alt',data[i].DisplayName);
-				$("#facultyData tr:nth-child("+child+")").find('img[src=""]').attr('src','/content/dam/bc1/schools/law/js/images/law_faculty_placeholder.jpg');
+				$("#facultyData tr:nth-child("+child+")").find('img[src=""]').attr('src','/content/dam/bc1/schools/law/js/fusion/default-person-335x400.png');
 				$("#facultyData tr:nth-child("+child+")").addClass(data[i].facultyStatus.replace(/\s+/g, ''));
             };
 			
@@ -324,10 +325,10 @@ function searchMenu() {
 			
                 if ( last !== groupData[i] ) {
 					if (groupData[i] !="Full-Time Faculty") { //No grouping header for full-time
-						$(rows).eq( i ).not(':has(h4)').addClass("facultyGroupHeaderRow").prepend(
-							'<h4 class="facultyGroupHeader">'+groupData[i]+'</h4>'
+						//$(rows).eq( i ).not(':has(h4)').addClass("facultyGroupHeaderRow").prepend(
+							//'<h4 class="facultyGroupHeader">'+groupData[i]+'</h4>'
 							
-						);
+						//);
 					}
                     last = groupData[i];
                 }
@@ -336,35 +337,43 @@ function searchMenu() {
 	
 		
 			
-		$('#facultyMore')
+		$('#facultyNext')
 		.unbind()
 		.on( 'click', function () {
-			facultyTable.page.len(999).draw();
-			$('#facultyMore').hide();
-			$('#facultyFewer').show().focus();
+			facultyTable.page('next').draw('page');
+
 		} );
-		$('#facultyFewer')
+		$('#facultyPrev')
 		.unbind()
 		.on( 'click', function () {
-			facultyTable.page.len( 6).draw();
-			$('#facultyFewer').hide();
-			$('#facultyMore').show().focus();
+			facultyTable.page('previous').draw('page');
+
 		} );
 		
-		if (api.page.len() ==6) {
-			$('#facultyFewer').hide();
-			$('#facultyMore').show();
+		$('#facultyFirst')
+		.unbind()
+		.on( 'click', function () {
+			facultyTable.page('first').draw('page');
+
+		} );
+		if (api.page() == api.page.info().pages-1) {
+			$('#facultyNext').hide();
+			$('#facultyPrev').show();
+			$('#facultyFirst').show();
+		}
+		else if (api.page() == 0) {
+			$('#facultyNext').text("Next Page ").show();
+			$('#facultyPrev').hide();
+			$('#facultyFirst').hide();
 		}
 		else {
-			$('#facultyFewer').show();
-			$('#facultyMore').hide();
+			$('#facultyNext').text('').show();
+			$('#facultyPrev').show();
+			$('#facultyFirst').hide();
 		}
 			
 		
-		if (api.page.info().recordsDisplay<7) {
-			$('#facultyFewer').hide();
-			$('#facultyMore').hide();
-		};
+	
 		smallWindow();//If window is less than 700px make adjustments to the interface
 		
 		if ($('#facultyData').css("display") == "none") {
@@ -376,6 +385,11 @@ function searchMenu() {
 			$('#faculty').find('span.tableInfo').show();	
 			
 		};
+
+		if (api.page.info().recordsDisplay<7) {
+			$('#faculty').find('span.tableInfo').hide();
+		};
+		
 		
 		//Make keypress produce click
 	$('a.more, a.fewer, span.details-control').unbind('keypress').keypress(function (e) {
@@ -399,7 +413,7 @@ function searchMenu() {
 	var coursesTable = $('#coursesData').DataTable( {
 			"dom": 'it',//remove default search input
 			"language": {
-				"info": "<h3>Courses</h3><span class='tableInfo'><p class='dataInfo'>Showing _END_ of _TOTAL_ </p><a  id='coursesMore' class='more' tabindex='0'>All courses</a><a id='coursesFewer' class='fewer' tabindex='0'>Fewer courses</a></span><span class='closedInfo'><p>_TOTAL_ results</p></span>",
+				"info": "<div class='info-inner'><h3>Courses</h3><span class='tableInfo'><p class='dataInfo'>Showing _START_ to _END_ of _TOTAL_ </p><a  id='coursesPrev' class='prev' tabindex='0'></a><a  id='coursesNext' class='more' tabindex='0'></a><a id='coursesFirst' class='first' tabindex='0'>Back to Start</a></span></div>",
 				"infoFiltered": "",
 				"infoEmpty" : "",
 				"zeroRecords" : ""
@@ -419,7 +433,7 @@ function searchMenu() {
 				{ "data": "Description"}
 				],
 		"order": [[0,'asc']],
-		"pageLength": 6,
+		"pageLength": 10,
 		columnDefs: [
 		{ "targets": [0,1], "orderable": false },
         { "targets": [2,3,4,5,6], "visible": false},
@@ -431,8 +445,12 @@ function searchMenu() {
       	{ "targets":6, "render": function ( data, type, full, meta ) {
       return data.replace(/business | civil | litigation | constitutional | criminal | procedure | environmental | experiential | health | international | comparative | immigration | real estate | tax /gi,"");}
 	  }
-	  ],	
+	  ],
+	"initComplete": function(settings) {
+		$("#coursesData").wrap("<div id='coursesTableWrapper' class='tableWrapper'></div>");
+	},
 	"drawCallback": function(settings) {
+	var api = this.api();	
 	//Hide course descriptions and add span with control to show and hide deescription
 		$("td.description")
 			.hide();
@@ -458,44 +476,68 @@ function searchMenu() {
 		$("span.answer-tab")
 		.unbind()
 		.click(function(){
-			$(this)
-				.toggleClass("open")
-				.parent()
-				.find("td.description")
-				.slideToggle(200);
+			var clicked = this
+			if ($(clicked).hasClass("open")) {
+				$(clicked)
+					.removeClass("open")
+					.parent()
+					.find("td.description")
+					.slideUp(200);
+			}
+			else {
+				$(".answer-tab")
+					.removeClass("open")
+					.parent()
+					.find("td.description")
+					.slideUp(200);
+				$(clicked)
+					.addClass("open")
+					.parent()
+					.find("td.description")
+					.slideDown(200);	
+			}
             return false;
 		});
 		
-		$('a#coursesMore')
+		$('#coursesNext')
 		.unbind()
 		.on( 'click', function () {
-			coursesTable.page.len(999).draw();
-			$('a#coursesMore').hide();
-			$('a#coursesFewer').show().focus();
+			$("span.answer-tab").removeClass('open');
+			coursesTable.page('next').draw('page');
 		} );
-		$('a#coursesFewer')
+		$('#coursesPrev')
 		.unbind()
 		.on( 'click', function () {
-			coursesTable.page.len( 6).draw();
-			$('a#coursesFewer').hide();
-			$('a#coursesMore').show().focus();
+			$("span.answer-tab").removeClass('open');
+			coursesTable.page('previous').draw('page');
 		} );
-		
-		var api = this.api();
-		if (api.page.len() ==6) {
-			$('a#coursesFewer').hide();
-			$('a#coursesMore').show();
+		$('#coursesFirst')
+		.unbind()
+		.on( 'click', function () {
+			$("span.answer-tab").removeClass('open');
+			coursesTable.page('first').draw('page');
+
+		} );
+		if (api.page() == api.page.info().pages-1) {
+			$('#coursesNext').hide();
+			$('#coursesPrev').show();
+			$('#coursesFirst').show();
+		}
+		else if (api.page() == 0) {
+			$('#coursesNext').text('Next Page ').show();
+			$('#coursesPrev').hide();
+			$('#coursesFirst').hide();
 		}
 		else {
-			$('a#coursesFewer').show();
-			$('a#coursesMore').hide();
+			$('#coursesNext').text('').show();
+			$('#coursesPrev').show();
+			$('#coursesFirst').hide();
 		}
 		
-		if (api.page.info().recordsDisplay<7) {
-			$('a#coursesFewer').hide();
-			$('a#coursesMore').hide();
-		};
+			
+		
 		smallWindow();//If window is less than 700px make adjustments to the interface
+		
 		
 		if ($('#coursesData').css("display") == "none") {
 			$('#courses').find('span.closedInfo').show();
@@ -506,6 +548,10 @@ function searchMenu() {
 			$('#courses').find('span.tableInfo').show();	
 			
 		};
+		if (api.page.info().recordsDisplay<11) {
+			$('#courses').find('span.tableInfo').hide();
+		};
+		
 		
 		//Make keypress produce click
 	$('a.more, a.fewer, span.details-control').unbind('keypress').keypress(function (e) {
@@ -527,7 +573,7 @@ function searchMenu() {
 	var experientialTable = $('#experientialData').DataTable( {
 			"dom": 'it',//remove default search input
 			"language": {
-				"info": "<h3>Experiential Learning Opportunities</h3><span class='tableInfo'><p class='dataInfo'>Showing _END_ of _TOTAL_ </p><a  id='experientialMore' class='more' tabindex='0'>All Experiential Opportunities</a><a  id='experientialFewer' class='fewer' tabindex='0'>Fewer Experiential Opportunities</a></span><span class='closedInfo'><p>_TOTAL_ results</p></span>",
+				"info": "<div class='info-inner'><h3>Experiential Learning Opportunities</h3><span class='tableInfo'><p class='dataInfo'>Showing _START_ to _END_ of _TOTAL_ </p><a  id='experientialNext' class='more' tabindex='0'>Next Page</a><a  id='experientialFirst' class='first' tabindex='0'>Back to Start</a></span></div>",
 				"infoFiltered": "",
 				"infoEmpty" : "",
 				"zeroRecords" : ""
@@ -548,6 +594,7 @@ function searchMenu() {
 				],
 		"order": [[2,'asc', 0, 'asc']],
 		"pageLength": 6,
+		"paging": false,
 		columnDefs: [
 		{ "targets": 0, "orderable": false },
         { "targets": [1,2,3,5,6], "visible": false},
@@ -560,7 +607,37 @@ function searchMenu() {
       return data+'<span class="experientialLink"><br/><a class="descriptionLink">Learn More</a></span>';}},
      	{ "targets":6, "render": function ( data, type, full, meta ) {
     	return data.replace(/business | civil | litigation | constitutional | criminal | procedure | environmental | experiential | health | international | comparative | immigration | real estate | tax /gi,"");}}
-		],	
+		],
+	"initComplete": function(settings) {	
+		//Create tabs/buttons for categories
+		 var api = this.api();
+           var rows = api.rows( {page:'current'} ).nodes();
+           var last=null;
+            var groupData = api.column(1, {page:'current'} ).data()
+			$("#experientialData").before("<div id='expTabs'></div>");
+			for (i = 0; i < groupData.length; i++) {
+				
+                if ( last !== groupData[i] ) {
+                    $("#expTabs").append(
+                        '<button class="group btn btn-default">'+groupData[i]+'</button>'
+                    );
+					
+ 
+                    last = groupData[i];
+                }
+            } ;
+		
+		api.column(1).search($("#experiential button.group:nth-child(1)").text()).draw();
+		$("#experiential button.group:nth-child(1)").addClass('selected');
+		$("#experiential button.group").unbind().click(function() {
+			$("#experiential button.group").removeClass('selected');
+			$(this).addClass('selected');
+			api.column(1).search($(this).text()).draw();
+			$(".answer-tabExp").removeClass('open');
+		});
+		$("#experientialData").wrap("<div id='expTableWrapper' class='tableWrapper'></div>");
+		
+	},
 	"drawCallback": function(settings) {
 		//Add URLs to any links and alt tags to any images in each row, using the URLs in column 2 of the table for the links and the faculty Name field for the alt tags
 		var api = this.api();
@@ -613,61 +690,58 @@ function searchMenu() {
 		$(".answer-tabExp")
 		.unbind()
 		.click(function(){
-			$(this)
-				.toggleClass("open")
-				.parent()
-				.find("td.descriptionExp")
-				.slideToggle(200);
+			var clicked = this
+			if ($(clicked).hasClass("open")) {
+				$(clicked)
+					.removeClass("open")
+					.parent()
+					.find("td.descriptionExp")
+					.slideUp(200);
+			}
+			else {
+				$(".answer-tabExp")
+					.removeClass("open")
+					.parent()
+					.find("td.descriptionExp")
+					.slideUp(200);
+				$(clicked)
+					.addClass("open")
+					.parent()
+					.find("td.descriptionExp")
+					.slideDown(200);	
+			}
+			
             return false;
 		});	
 		
 		
-		//Group items by type
-		 var api = this.api();
-           var rows = api.rows( {page:'current'} ).nodes();
-           var last=null;
-            var groupData = api.column(1, {page:'current'} ).data()
-			for (i = 0; i < groupData.length; i++) {
-				
-                if ( last !== groupData[i] ) {
-                    $(rows).eq( i ).before(
-                        '<tr class="group"><td><h4>'+groupData[i]+'</h4></td></tr>'
-                    );
- 
-                    last = groupData[i];
-                }
-            } ;
+		
 		
 			
-			
-		$('a#experientialMore')
+		$('#experientialNext')
 		.unbind()
 		.on( 'click', function () {
-			experientialTable.page.len(999).draw();
-			$('a#experientialMore').hide();
-			$('a#experientialFewer').show().focus();
+			experientialTable.page('next').draw('page');
+
 		} );
-		$('a#experientialFewer')
+		$('#experientialFirst')
 		.unbind()
 		.on( 'click', function () {
-			experientialTable.page.len( 6).draw();
-			$('a#experientialFewer').hide();
-			$('a#experientialMore').show().focus();
+			experientialTable.page('first').draw('page');
+
 		} );
-		
-		if (api.page.len() ==6) {
-			$('a#experientialFewer').hide();
-			$('a#experientialMore').show();
+		if (api.page() == api.page.info().pages-1) {
+			$('#experientialNext').hide();
+			$('#experientialFirst').show();
 		}
 		else {
-			$('a#experientialFewer').show();
-			$('a#experientialMore').hide();
+			$('#experientialNext').show();
+			$('#experientialFirst').hide();
 		}
+			
 		
-		if (api.page.info().recordsDisplay<7) {
-			$('a#experientialFewer').hide();
-			$('a#experientialMore').hide();
-		};		
+		
+		
 		smallWindow();//If window is less than 700px make adjustments to the interface	
 		
 		if ($('#experientialData').css("display") == "none") {
@@ -679,6 +753,10 @@ function searchMenu() {
 			$('#experiential').find('span.tableInfo').show();	
 			
 		};
+		
+		//if (api.page.info().recordsDisplay<7) { //for unpaged version, always hide table info
+			$('#experiential').find('span.tableInfo').hide();
+		//};
 		
 		//Make keypress produce click
 	$('a.more, a.fewer, span.details-control').unbind('keypress').keypress(function (e) {
@@ -700,7 +778,7 @@ function searchMenu() {
 	var publicationsTable = $('#publicationsData').DataTable( {
 			"dom": 'it',//remove default search input
 			"language": {
-				"info": "<h3>Faculty Publications</h3><span class='tableInfo'><p class='dataInfo'>Showing _END_ of _TOTAL_ </p>  <a id='publicationsMore' class='more' tabindex='0'>All publications</a><a id='publicationsFewer' class='fewer' tabindex='0'>Fewer publications</a></span><span class='closedInfo'><p>_TOTAL_ results</p></span>",
+				"info": "<div class='info-inner'><h3>Faculty Publications</h3><span class='tableInfo'><p class='dataInfo'>Showing _START_ to _END_ of _TOTAL_ </p><a  id='publicationsPrev' class='prev' tabindex='0' ></a><a  id='publicationsNext' class='more' tabindex='0'></a><a id='publicationsFirst' class='first' tabindex='0'>Back to Start</a></span></div>",
 				"infoFiltered": "",
 				"infoEmpty" : "",
 				"zeroRecords" : ""
@@ -740,43 +818,48 @@ function searchMenu() {
 				$("#publicationsData tr:nth-child("+child+")").find('.namePub').remove();
 				$("#publicationsData tr:nth-child("+child+")").find('a').attr('href',data[i].URL);
 				if (data[i].book == 1) { //italicize publication/publisher for journal articles but not for books
-				$("#publicationsData tr:nth-child("+child+")").find('td').append('<p class="namePub">'+data[i].name+', '+data[i].publication+', '+data[i].year+'</p>');
+				$("#publicationsData tr:nth-child("+child+")").addClass('book').find('td').append('<p class="namePub">'+data[i].name+', '+data[i].publication+', '+data[i].year+'</p>');
 				}
 				else {
-				$("#publicationsData tr:nth-child("+child+")").find('td').append('<p class="namePub">'+data[i].name+', <em>'+data[i].publication+'</em>, '+data[i].year+'</p>');
+				$("#publicationsData tr:nth-child("+child+")").addClass('pdf').find('td').append('<p class="namePub">'+data[i].name+', <em>'+data[i].publication+'</em>, '+data[i].year+'</p>');
 				}
             }
 
-		$('#publicationsMore')
+			
+		$('#publicationsNext')
 		.unbind()
 		.on( 'click', function () {
-			publicationsTable.page.len(9999).draw();
-			$('#publicationsMore').hide();
-			$('#publicationsFewer').show().focus();
+			publicationsTable.page('next').draw('page');
+
 		} );
-		$('#publicationsFewer')
+		$('#publicationsPrev')
 		.unbind()
 		.on( 'click', function () {
-			publicationsTable.page.len( 6).draw();
-			$('#publicationsFewer').hide();
-			$('#publicationsMore').show().focus();
+			publicationsTable.page('previous').draw('page');
+
 		} );
-		
-		if (api.page.len() ==6) {
-			$('#publicationsFewer').hide();
-			$('#publicationsMore').show();
+		$('#publicationsFirst')
+		.unbind()
+		.on( 'click', function () {
+			publicationsTable.page('first').draw('page');
+
+		} );
+		if (api.page() == api.page.info().pages-1) {
+			$('#publicationsNext').hide();
+			$('#publicationsPrev').show();
+			$('#publicationsFirst').show();
+		}
+		else if (api.page() == 0) {
+			$('#publicationsNext').text('Next Page ').show();
+			$('#publicationsPrev').hide();
+			$('#publicationsFirst').hide();
 		}
 		else {
-			$('#publicationsFewer').show();
-			$('#publicationsMore').hide();
+			$('#publicationsNext').text('').show();
+			$('#publicationsPrev').show();
+			$('#publicationsFirst').hide();
 		}
 		
-		
-		
-		if (api.page.info().recordsDisplay<7) {
-			$('#publicationsFewer').hide();
-			$('#publicationsMore').hide();
-		};
 		smallWindow();//If window is less than 700px make adjustments to the interface	
 		
 		if ($('#publicationsData').css("display") == "none") {
@@ -787,6 +870,9 @@ function searchMenu() {
 			$('#publications').find('span.closedInfo').hide();
 			$('#publications').find('span.tableInfo').show();	
 			
+		};
+		if (api.page.info().recordsDisplay<7) {
+			$('#publications').find('span.tableInfo').hide();
 		};
 		
 		//Make keypress produce click

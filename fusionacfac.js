@@ -7,7 +7,7 @@ function getURLParameter(name) {
 
 
 
-	$(document).ready(function() {
+window.onload = function() {
 //Filter button - only shows on mobile, opens and closes the menu
 	$("div#fusionFilter button").click(function() {
 		$("ul#areaSearch").slideToggle();
@@ -102,6 +102,7 @@ function getURLParameter(name) {
 			"url": "/content/dam/bc1/schools/law/js/fusion/facultyData.json",
 			"dataSrc":""
 			},
+			"deferRender": true,
 			"order": [[8,'asc'], [6,'asc']],
 			"pageLength": 4,
 			  "columns": [
@@ -124,23 +125,22 @@ function getURLParameter(name) {
 		{ "targets":0, "render": function ( data, type, full, meta ) {
       return '<a><img src="'+data+'"></a>';}},
     	{ "targets":9, "render": function ( data, type, full, meta ) {
-      return data.replace(/business/gi,"").replace(/civil/gi, "").replace(/litigation/gi, "").replace(/constitutional/gi, "").replace(/criminal/gi, "").replace(/procedure/gi, "").replace(/environmental/gi, "").replace(/experiential/gi, "").replace(/health/gi, "").replace(/international/gi, "").replace(/comparative/gi, "").replace(/immigration/gi, "").replace(/real estate/gi, "").replace(/tax/gi, "");}}
+     return data.replace(/business | civil | litigation | constitutional | criminal | procedure | environmental | experiential | health | international | comparative | immigration | real estate | tax /gi,"");}}
 		],	
 	"drawCallback": function(settings) {
 		//Add URLs to any links and alt tags to any images in each row, using the URLs in column 2 of the table for the links and the faculty Name field for the alt tags
 		var api = this.api();
 		var data=api.rows({page:'current'}).data();
-		$.each(data, function (index,value) {
-				var URL=this.URL;
-				var name=this.DisplayName;
-				var child=index+1;
+			for (i = 0; i < data.length; i++) {
+			
+			
+				var child=i+1;
 				$("#facultyData tr:nth-child("+child+")").find('.facultyName').remove();
-				$("#facultyData tr:nth-child("+child+")").find('td').append('<a class="facultyName">'+name+'</a>');
-				$("#facultyData tr:nth-child("+child+")").find('a').attr('href',URL);
-				$("#facultyData tr:nth-child("+child+")").find('img').attr('alt',name);
+				$("#facultyData tr:nth-child("+child+")").find('td').append('<a class="facultyName">'+data[i].DisplayName+'</a>');
+				$("#facultyData tr:nth-child("+child+")").find('a').attr('href',data[i].URL);
+				$("#facultyData tr:nth-child("+child+")").find('img').attr('alt',data[i].DisplayName);
 				$("#facultyData tr:nth-child("+child+")").find('img[src=""]').attr('src','/content/dam/bc1/schools/law/js/images/law_faculty_placeholder.jpg');
-            }
-			);
+            };
 		
 	
 		}//end drawCallBack
@@ -161,6 +161,7 @@ function getURLParameter(name) {
 			"url": "/content/dam/bc1/schools/law/js/fusion/courseDataDescriptions.json",
 			"dataSrc":""
 			},
+			"deferRender": true,
 			  "columns": [
 				{ "data": "Title"},
 				{ "data": "Description"},
@@ -175,7 +176,7 @@ function getURLParameter(name) {
 		{ "targets": [0,1], "orderable": false },
         { "targets": [1,2,3,4,5], "visible": false},
      	{ "targets":1, "render": function ( data, type, full, meta ) {
-      return data.replace(/business/gi,"").replace(/civil/gi, "").replace(/litigation/gi, "").replace(/constitutional/gi, "").replace(/criminal/gi, "").replace(/procedure/gi, "").replace(/environmental/gi, "").replace(/experiential/gi, "").replace(/health/gi, "").replace(/international/gi, "").replace(/comparative/gi, "").replace(/immigration/gi, "").replace(/real estate/gi, "").replace(/tax/gi, "");}}
+		return data.replace(/business | civil | litigation | constitutional | criminal | procedure | environmental | experiential | health | international | comparative | immigration | real estate | tax /gi,"");}}
 		],	
 	"drawCallback": function(settings) {
 		
@@ -200,6 +201,7 @@ function getURLParameter(name) {
 			"url": "/content/dam/bc1/schools/law/js/fusion/experientialData.json",
 			"dataSrc":""
 			},
+			"deferRender": true,
 			  "columns": [
 				{ "data": "Title"},
 				{ "data": "Category" },
@@ -216,25 +218,24 @@ function getURLParameter(name) {
 		{ "targets":0, "render": function ( data, type, full, meta ) {
       return '<a class="experientialLink" href="#"><span class="innerLink">'+data+'</span></a>';}},
      	{ "targets":4, "render": function ( data, type, full, meta ) {
-      return data.replace(/business/gi,"").replace(/civil/gi, "").replace(/litigation/gi, "").replace(/constitutional/gi, "").replace(/criminal/gi, "").replace(/procedure/gi, "").replace(/environmental/gi, "").replace(/experiential/gi, "").replace(/health/gi, "").replace(/international/gi, "").replace(/comparative/gi, "").replace(/immigration/gi, "").replace(/real estate/gi, "").replace(/tax/gi, "");}}
+	return data.replace(/business | civil | litigation | constitutional | criminal | procedure | environmental | experiential | health | international | comparative | immigration | real estate | tax /gi,"");}}
 		],	
 	"drawCallback": function(settings) {
 		
 		 var api = this.api();
 		var data=api.rows({page:'current'}).data();
-		$.each(data, function (index,value) {
-				var URL=this.URL;
-				var child=index+1;
-			if (!!URL) {	
-				$("#experientialData tr:nth-child("+child+") a.experientialLink").attr('href',URL);
-			}
-			else {
-				$("#experientialData tr:nth-child("+child+") span.innerLink").unwrap(); 
-			}
-			
+		
+		 for (i = 0; i < data.length; i++) {
+				var child=i+1;
+				if (!!data[i].URL)
+				{
+					$("#experientialData tr:nth-child("+child+") a.experientialLink").attr('href',data[i].URL);
+				}
+				else {
+					$("#experientialData tr:nth-child("+child+") span.innerLink").unwrap(); 
+				}
+				
             }
-			); 
-		 
 		 
 		 //Group items by type
            var rows = api.rows( {page:'current'} ).nodes();
@@ -273,6 +274,7 @@ function getURLParameter(name) {
 			"url": "/content/dam/bc1/schools/law/js/fusion/publicationsData.json",
 			"dataSrc":""
 			},
+			"deferRender": true,
 			  "columns": [
 				{ "data": "year"},
 				{ "data": "title"},
@@ -296,23 +298,20 @@ function getURLParameter(name) {
 		//Add URLs to any links and alt tags to any images in each row, using the URLs in column 2 of the table for the links and the faculty Name field for the alt tags
 		var api = this.api();
 		var data=api.rows({page:'current'}).data();
-		$.each(data, function (index,value) {
-				var URL=this.URL
-				var publication=this.publication
-				var name=this.name
-				var year=this.year
-				var book=this.book
-				var child=index+1;
+			for (i = 0; i < data.length; i++) {
+				
+				var child=i+1;
 				$("#publicationsData tr:nth-child("+child+")").find('.namePub').remove();
-				$("#publicationsData tr:nth-child("+child+")").find('a').attr('href',URL);
-				if (book == 1) { //italicize publication/publisher for journal articles but not for books
-				$("#publicationsData tr:nth-child("+child+")").find('td').append('<p class="namePub">'+name+', '+publication+', '+year+'</p>');
+				$("#publicationsData tr:nth-child("+child+")").find('a').attr('href',data[i].URL);
+				if (data[i].book == 1) { //italicize publication/publisher for journal articles but not for books
+				$("#publicationsData tr:nth-child("+child+")").find('td').append('<p class="namePub">'+data[i].name+', '+data[i].publication+', '+data[i].year+'</p>');
 				}
 				else {
-				$("#publicationsData tr:nth-child("+child+")").find('td').append('<p class="namePub">'+name+', <em>'+publication+'</em>, '+year+'</p>');
+				$("#publicationsData tr:nth-child("+child+")").find('td').append('<p class="namePub">'+data[i].name+', <em>'+data[i].publication+'</em>, '+data[i].year+'</p>');
 				}
             }
-			);
+			
+			
 			
 		
 	}
@@ -328,4 +327,4 @@ function getURLParameter(name) {
 	}; 
 
 
-} );
+};
