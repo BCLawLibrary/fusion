@@ -325,6 +325,6 @@ window.onload = function() {
 	 tables.search( myKey ).draw();
 	 $('#myInput').val(myKey);
 	}; 
-
-
+	
+	
 };
