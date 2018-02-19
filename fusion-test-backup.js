@@ -186,11 +186,59 @@ _fnCallbackFire:u,_fnLengthOverflow:Sa,_fnRenderer:Na,_fnDataSource:y,_fnRowAttr
 //Get any search parameters from the URL
 function getURLParameter(name) {
   return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||""
-}
+	}
 
 	myKey = getURLParameter('key').replace("and","&");
+
+
+
+	window.onload = function() {
+		
+//Create drop down menu from stored file of display names and search terms	
+
+		
+	var cList = $('div#areaSearch')
+	$(cList).empty();
+	var currentUL = $('<ul/>').addClass('menu-list');
+	var li = $('<li/>') //add Show All link at start of subject menu
+				.addClass('all')
+				.attr('role', 'menuitem')
+				.attr('tabindex', '1')
+				.text('All Areas')
+				.appendTo(currentUL);	
+	$.getJSON( "/content/dam/bc1/schools/law/js/fusion/menuData.json", function( data ) {
+	var items = [];
 	
-function searchMenu() {
+	for (i = 0; i < data.length; i++) {
+		
+		if ((i+1) % 5 == 0) {
+			currentUL.appendTo(cList);
+			currentUL  = $('<ul/>')
+				.addClass('menu-list');
+		}
+	
+	
+		var li = $('<li/>')
+				.addClass('ui-menu-item')
+				.attr('role', 'menuitem')
+				.attr('tabindex', '1')
+				.attr('id', data[i].searchTerm)
+				.text(data[i].displayName)
+				.appendTo(currentUL);
+			};
+			
+			
+	currentUL.appendTo(cList);
+			
+	var span = $('<span/>') //add Show All X at end of subject menu
+				.addClass('allXDropDown')
+				.attr('role', 'menuitem')
+				.attr('tabindex', '1')
+				.text('X')
+				.appendTo(cList);
+
+		
+	//Open menu	
 	$('span.dropdownOpen').click(function() {
 		$('div.dropdown-content').toggle();
 	});
@@ -199,14 +247,19 @@ function searchMenu() {
 	$('span.dropdownOpen, .ui-menu-item, a.more, a.fewer, span.details-control, span#clearSearch').unbind('keypress').keypress(function (e) {
 		var key = e.which;
 		if(key == 13)  // the enter key code
-	
 	{
 		$(this).click();
 		return false;  
 	}
 	});
+	
+	
+	
+	
+	
+	
+			
 	//Perform a search from the drop-down of pre-selected searches
-	var tables = $('.dataTable').DataTable(); //Needed to let inputs controll all tables 
 	$('li.ui-menu-item').click (function() {
 	var search = $(this).attr("id"); //the search term is stored in the ID - this allows for the display on the drop down to be different than the text that is searched for
 	tables.search("");
@@ -219,47 +272,7 @@ function searchMenu() {
 	 $('#myInput').val("");
 	 $("span.all").hide();
 	});
-	if (myKey.length >0) {
-	 tables.search( myKey.replace(/\blaw\b/g, '').replace(/\bLaw\b/g, '') ).draw();
-	 $('#myInput').val(myKey);
-	 $('.dropdown-content').hide();
-	}; 
-	$("span.all").hide();//hide the X that appears in the search box
-	// #myInput is a <input type="text"> element
-	
-	
-	//Search from the text search input
-	$('#myInput').on( 'keyup', function () {
-		var inputSearch = this.value.replace(/\blaw\b/g, '').replace(/\bLaw\b/g, '');
-	if (inputSearch.length==0) {
-		tables.search(inputSearch).draw();
-		$("span.all").hide();
-	}
-	//Short searches with publications set to "All" are very slow - if the user searches less than 3 characters with pubs set to show all, change the pubs table to show fewer
-	else if (inputSearch.length<3) {
-		$('#publicationsData').DataTable().page.len(6).draw();
-		tables.search(inputSearch).draw();
-		$("span.all").show();
-	}
-	else	{
-		tables.search(inputSearch).draw();
-		$("span.all").show();
-	}
 	});
-	//end of the text search input
-	//at widths of 700px or less, start with the tables hidden and use the header as a toggle
-	if ($('#courses').css("float") == "left"){
-		$('.dataTable').hide();
-	}
-}		
-
-
-
-	window.onload = function() {
-		
-//Create drop down menu from stored file of display names and search terms	
-		
-
  
 		//Faculty Table
 		var facultyTable = $('#facultyData').DataTable( {
@@ -392,7 +405,7 @@ function searchMenu() {
 
 
 		
-		});
+		} );
 	
 	
 	//Courses Table
@@ -427,7 +440,7 @@ function searchMenu() {
 		{ className: "preLoad", "targets": [ 0 ] },
 		{ className: "description", "targets": [ 1 ] },
 		{ "targets":0, "render": function ( data, type, full, meta ) {
-      return '<a href="#" class="courseToggle openToggle">'+data+'</a>';}},
+      return '<a href="#">'+data+'</a>';}},
       	{ "targets":6, "render": function ( data, type, full, meta ) {
       return data.replace(/business | civil | litigation | constitutional | criminal | procedure | environmental | experiential | health | international | comparative | immigration | real estate | tax /gi,"");}
 	  }
@@ -445,7 +458,7 @@ function searchMenu() {
 		
 		//Add control to rows with descriptions
 		$("td.preLoad")
-			.wrap("<span class='answer-tab details-control openToggle'></span>")
+			.wrap("<span class='answer-tab details-control'></span>")
 			.removeClass("preLoad");
 			
 		//Add empty control span to rows with no descriptions
@@ -460,15 +473,9 @@ function searchMenu() {
 		.click(function(){
 			$(this)
 				.toggleClass("open")
-				.toggleClass("openToggle")
-				.toggleClass("closeToggle")
 				.parent()
 				.find("td.description")
-				.slideToggle(200)
-				.parent()
-				.find('a.courseToggle')
-				.toggleClass("openToggle")
-				.toggleClass("closeToggle");
+				.slideToggle(200);
             return false;
 		});
 		
@@ -561,7 +568,7 @@ function searchMenu() {
 		{ className: "preLoadExp", "targets": [ 0 ] },
 		{ className: "descriptionExp", "targets": [ 4 ] },
 		{ "targets":0, "render": function ( data, type, full, meta ) {
-      return '<a href="#" class="outerLink"><span class="innerLink experientialToggle openToggle">'+data+'</span></a>';}},
+      return '<a href="#"><span class="innerLink">'+data+'</span></a>';}},
 		{ "targets":4, "render": function ( data, type, full, meta ) {
       return data+'<span class="experientialLink"><br/><a class="descriptionLink">Learn More</a></span>';}},
      	{ "targets":6, "render": function ( data, type, full, meta ) {
@@ -571,7 +578,6 @@ function searchMenu() {
 		//Add URLs to any links and alt tags to any images in each row, using the URLs in column 2 of the table for the links and the faculty Name field for the alt tags
 		var api = this.api();
 		var data=api.rows({page:'current'}).data();
-		
 		
 		for (i = 0; i < data.length; i++) {
 				var child=i+1;
@@ -606,7 +612,7 @@ function searchMenu() {
 		
 		//Add control to rows with descriptions
 		$("td.preLoadExp")
-			.wrap("<span class='answer-tabExp details-controlExp openToggle'></span>")
+			.wrap("<span class='answer-tabExp details-controlExp'></span>")
 			.removeClass("preLoadExp");
 			
 		//Add empty control span to rows with no descriptions
@@ -621,15 +627,9 @@ function searchMenu() {
 		.click(function(){
 			$(this)
 				.toggleClass("open")
-				.toggleClass("openToggle")
-				.toggleClass("closeToggle")
 				.parent()
 				.find("td.descriptionExp")
-				.slideToggle(200)
-				.parent()
-				.find('span.experientialToggle')
-				.toggleClass("openToggle")
-				.toggleClass("closeToggle");
+				.slideToggle(200);
             return false;
 		});	
 		
@@ -854,16 +854,6 @@ function searchMenu() {
 		$("span.all").show();
 	}
 	});
-	
-	$('#myInput').focusout(function() {
-			var inputSearchText = this.value;
-			window.dataLayer = window.dataLayer || [];
-			window.dataLayer.push({
-			event: 'Fusion Search',	
-			searchValue: inputSearchText
-			});
-	});
-	
 	//end of the text search input
 	
 	
@@ -908,6 +898,9 @@ function searchMenu() {
 
 	};
 	}
-	searchMenu();
-} ;
+	
+	
+	
+	
 
+} ;

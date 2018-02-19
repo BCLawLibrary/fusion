@@ -178,33 +178,53 @@ _fnFeatureHtmlPaginate:tb,_fnPageChange:Ta,_fnFeatureHtmlProcessing:qb,_fnProces
 _fnCallbackFire:u,_fnLengthOverflow:Sa,_fnRenderer:Na,_fnDataSource:y,_fnRowAttributes:La,_fnCalculateEnd:function(){}});h.fn.dataTable=m;m.$=h;h.fn.dataTableSettings=m.settings;h.fn.dataTableExt=m.ext;h.fn.DataTable=function(a){return h(this).dataTable(a).api()};h.each(m,function(a,b){h.fn.DataTable[a]=b});return h.fn.dataTable});
 
 
-
-
-
-//FUSION STARTS HERE
+//Try running tables before window.onload
 
 //Get any search parameters from the URL
 function getURLParameter(name) {
   return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||""
-}
-
-	myKey = getURLParameter('key').replace("and","&");
-	
-function searchMenu() {
-	$('span.dropdownOpen').click(function() {
-		$('div.dropdown-content').toggle();
-	});
-
-	//Make keypress produce click
-	$('span.dropdownOpen, .ui-menu-item, a.more, a.fewer, span.details-control, span#clearSearch').unbind('keypress').keypress(function (e) {
-		var key = e.which;
-		if(key == 13)  // the enter key code
-	
-	{
-		$(this).click();
-		return false;  
 	}
-	});
+
+myKey = getURLParameter('key').replace("and","&");
+
+
+function smallWindow() { //This function is run in the drawCallback of each table - it creates the responsive behavior for the tables
+	if ($('#courses').css("float") == "left"){
+		
+		$('div.dataTables_info h3, .closedInfo')
+		.unbind()
+		.click(function() {
+			if ($(this).parent().parent().find('.dataTable').css("display") =="none") {
+				$(this).parent().find('span.closedInfo').hide();
+				$(this).parent().find('span.tableInfo').show();	
+			}
+			else {
+				$(this).parent().find('span.closedInfo').show();
+				$(this).parent().find('span.tableInfo').hide();
+			};
+			$(this).parent().parent().find('.dataTable').fadeToggle();
+		});
+			
+			
+		$('.dataInfo')
+		.unbind()
+		.click(function() {
+			if ($(this).parent().parent().parent().find('.dataTable').css("display") =="none") {
+				$(this).parent().parent().find('span.closedInfo').hide();
+				$(this).parent().parent().find('span.tableInfo').show();	
+			}
+			else {
+				$(this).parent().parent().find('span.closedInfo').show();
+				$(this).parent().parent().find('span.tableInfo').hide();
+			};
+			$(this).parent().parent().parent().find('.dataTable').fadeToggle();
+			
+			
+		});
+
+	};
+}
+function searchMenu() {
 	//Perform a search from the drop-down of pre-selected searches
 	var tables = $('.dataTable').DataTable(); //Needed to let inputs controll all tables 
 	$('li.ui-menu-item').click (function() {
@@ -251,17 +271,13 @@ function searchMenu() {
 	if ($('#courses').css("float") == "left"){
 		$('.dataTable').hide();
 	}
-}		
+}	
 
 
+//Faculty Table
+$.getJSON( "/content/dam/bc1/schools/law/js/fusion/facultyData.json", function ( facultyTableData ) {
+	$(document).ready(function(){
 
-	window.onload = function() {
-		
-//Create drop down menu from stored file of display names and search terms	
-		
-
- 
-		//Faculty Table
 		var facultyTable = $('#facultyData').DataTable( {
 			"dom": 'it',//remove default search input
 			 "language": {
@@ -270,10 +286,7 @@ function searchMenu() {
 				"infoEmpty" : "",
 				"zeroRecords" : ""
 			},
-			"ajax": {
-			"url": "/content/dam/bc1/schools/law/js/fusion/facultyData.json",
-			"dataSrc":""
-			},
+			"data":facultyTableData,
 			"deferRender": true,
 			"order": [[8,'asc'], [6,'asc']],
 			"pageLength": 6,
@@ -386,16 +399,22 @@ function searchMenu() {
 		return false;  
 	}
 	});
-	
+
 		}//end drawCallBack
-		
+	
 
 
-		
-		});
 	
-	
-	//Courses Table
+		} );
+	searchMenu();
+	});
+});
+//end faculty table
+
+//Courses Table
+$.getJSON( "/content/dam/bc1/schools/law/js/fusion/courseDataDescriptions.json", function( coursesTableData ) {
+	$(document).ready(function(){
+
 	var coursesTable = $('#coursesData').DataTable( {
 			"dom": 'it',//remove default search input
 			"language": {
@@ -404,10 +423,7 @@ function searchMenu() {
 				"infoEmpty" : "",
 				"zeroRecords" : ""
 			},
-			"ajax": {
-			"url": "/content/dam/bc1/schools/law/js/fusion/courseDataDescriptions.json",
-			"dataSrc":""
-			},
+			"data":coursesTableData,
 			"deferRender": true,
 			  "columns": [
 				{ "data": "Title"},
@@ -427,7 +443,7 @@ function searchMenu() {
 		{ className: "preLoad", "targets": [ 0 ] },
 		{ className: "description", "targets": [ 1 ] },
 		{ "targets":0, "render": function ( data, type, full, meta ) {
-      return '<a href="#" class="courseToggle openToggle">'+data+'</a>';}},
+      return '<a href="#">'+data+'</a>';}},
       	{ "targets":6, "render": function ( data, type, full, meta ) {
       return data.replace(/business | civil | litigation | constitutional | criminal | procedure | environmental | experiential | health | international | comparative | immigration | real estate | tax /gi,"");}
 	  }
@@ -445,7 +461,7 @@ function searchMenu() {
 		
 		//Add control to rows with descriptions
 		$("td.preLoad")
-			.wrap("<span class='answer-tab details-control openToggle'></span>")
+			.wrap("<span class='answer-tab details-control'></span>")
 			.removeClass("preLoad");
 			
 		//Add empty control span to rows with no descriptions
@@ -460,15 +476,9 @@ function searchMenu() {
 		.click(function(){
 			$(this)
 				.toggleClass("open")
-				.toggleClass("openToggle")
-				.toggleClass("closeToggle")
 				.parent()
 				.find("td.description")
-				.slideToggle(200)
-				.parent()
-				.find('a.courseToggle')
-				.toggleClass("openToggle")
-				.toggleClass("closeToggle");
+				.slideToggle(200);
             return false;
 		});
 		
@@ -522,14 +532,18 @@ function searchMenu() {
 		return false;  
 	}
 	});
-	
-		
-		
 		}
 		//end drawCallBack
-		} );
-		
-	//Experiential Table
+});
+	searchMenu();
+});
+});
+//End courses table
+
+//Experiential Table
+
+$.getJSON( "/content/dam/bc1/schools/law/js/fusion/experientialData.json", function( experientialTableData ) {
+$(document).ready(function(){
 	var experientialTable = $('#experientialData').DataTable( {
 			"dom": 'it',//remove default search input
 			"language": {
@@ -538,10 +552,7 @@ function searchMenu() {
 				"infoEmpty" : "",
 				"zeroRecords" : ""
 			},
-			"ajax": {
-			"url": "/content/dam/bc1/schools/law/js/fusion/experientialData.json",
-			"dataSrc":""
-			},
+			"data":experientialTableData,
 			"deferRender": true,
 			  "columns": [
 				{ "data": "Title"},
@@ -561,7 +572,7 @@ function searchMenu() {
 		{ className: "preLoadExp", "targets": [ 0 ] },
 		{ className: "descriptionExp", "targets": [ 4 ] },
 		{ "targets":0, "render": function ( data, type, full, meta ) {
-      return '<a href="#" class="outerLink"><span class="innerLink experientialToggle openToggle">'+data+'</span></a>';}},
+      return '<a href="#"><span class="innerLink">'+data+'</span></a>';}},
 		{ "targets":4, "render": function ( data, type, full, meta ) {
       return data+'<span class="experientialLink"><br/><a class="descriptionLink">Learn More</a></span>';}},
      	{ "targets":6, "render": function ( data, type, full, meta ) {
@@ -571,7 +582,6 @@ function searchMenu() {
 		//Add URLs to any links and alt tags to any images in each row, using the URLs in column 2 of the table for the links and the faculty Name field for the alt tags
 		var api = this.api();
 		var data=api.rows({page:'current'}).data();
-		
 		
 		for (i = 0; i < data.length; i++) {
 				var child=i+1;
@@ -606,7 +616,7 @@ function searchMenu() {
 		
 		//Add control to rows with descriptions
 		$("td.preLoadExp")
-			.wrap("<span class='answer-tabExp details-controlExp openToggle'></span>")
+			.wrap("<span class='answer-tabExp details-controlExp'></span>")
 			.removeClass("preLoadExp");
 			
 		//Add empty control span to rows with no descriptions
@@ -621,15 +631,9 @@ function searchMenu() {
 		.click(function(){
 			$(this)
 				.toggleClass("open")
-				.toggleClass("openToggle")
-				.toggleClass("closeToggle")
 				.parent()
 				.find("td.descriptionExp")
-				.slideToggle(200)
-				.parent()
-				.find('span.experientialToggle')
-				.toggleClass("openToggle")
-				.toggleClass("closeToggle");
+				.slideToggle(200);
             return false;
 		});	
 		
@@ -700,15 +704,18 @@ function searchMenu() {
 		$(this).click();
 		return false;  
 	}
-	});
-	
-		
-			
+	});		
 		}
 		//end drawCallBack
-		} );
-		
-	//Publications Table	
+});
+	searchMenu();
+});
+});
+//End Experiential Table
+//Publications Table	
+$.getJSON( "/content/dam/bc1/schools/law/js/fusion/publicationsData.json", function( publicationData ) {
+	$(document).ready(function(){
+
 	var publicationsTable = $('#publicationsData').DataTable( {
 			"dom": 'it',//remove default search input
 			"language": {
@@ -717,10 +724,7 @@ function searchMenu() {
 				"infoEmpty" : "",
 				"zeroRecords" : ""
 			},
-			"ajax": {
-			"url": "/content/dam/bc1/schools/law/js/fusion/publicationsData.json",
-			"dataSrc":""
-			},
+			"data": publicationData,
 			"deferRender": true,
 			  "columns": [
 				{ "data": "year"},
@@ -812,102 +816,42 @@ function searchMenu() {
 	});
 	
 		
-	
-		
 	}
 		//end drawCallBack
 
-		});		
-		
-	
-	
-		
-	
-
-		
-	var tables = $('.dataTable').DataTable(); //Needed to let inputs controll all tables 
-
-	if (myKey.length >0) {
-	 tables.search( myKey.replace(/\blaw\b/g, '').replace(/\bLaw\b/g, '') ).draw();
-	 $('#myInput').val(myKey);
-	 $('.dropdown-content').hide();
-	}; 
-	$("span.all").hide();//hide the X that appears in the search box
-	// #myInput is a <input type="text"> element
-	
-	
-	//Search from the text search input
-	$('#myInput').on( 'keyup', function () {
-		var inputSearch = this.value.replace(/\blaw\b/g, '').replace(/\bLaw\b/g, '');
-	if (inputSearch.length==0) {
-		tables.search(inputSearch).draw();
-		$("span.all").hide();
-	}
-	//Short searches with publications set to "All" are very slow - if the user searches less than 3 characters with pubs set to show all, change the pubs table to show fewer
-	else if (inputSearch.length<3) {
-		$('#publicationsData').DataTable().page.len(6).draw();
-		tables.search(inputSearch).draw();
-		$("span.all").show();
-	}
-	else	{
-		tables.search(inputSearch).draw();
-		$("span.all").show();
-	}
-	});
-	
-	$('#myInput').focusout(function() {
-			var inputSearchText = this.value;
-			window.dataLayer = window.dataLayer || [];
-			window.dataLayer.push({
-			event: 'Fusion Search',	
-			searchValue: inputSearchText
-			});
-	});
-	
-	//end of the text search input
-	
-	
-	//at widths of 700px or less, start with the tables hidden and use the header as a toggle
-	if ($('#courses').css("float") == "left"){
-		$('.dataTable').hide();
-	}
-	
-	function smallWindow() { //This function is run in the drawCallback of each table
-	if ($('#courses').css("float") == "left"){
-		
-		$('div.dataTables_info h3, .closedInfo')
-		.unbind()
-		.click(function() {
-			if ($(this).parent().parent().find('.dataTable').css("display") =="none") {
-				$(this).parent().find('span.closedInfo').hide();
-				$(this).parent().find('span.tableInfo').show();	
-			}
-			else {
-				$(this).parent().find('span.closedInfo').show();
-				$(this).parent().find('span.tableInfo').hide();
-			};
-			$(this).parent().parent().find('.dataTable').fadeToggle();
 		});
-			
-			
-		$('.dataInfo')
-		.unbind()
-		.click(function() {
-			if ($(this).parent().parent().parent().find('.dataTable').css("display") =="none") {
-				$(this).parent().parent().find('span.closedInfo').hide();
-				$(this).parent().parent().find('span.tableInfo').show();	
-			}
-			else {
-				$(this).parent().parent().find('span.closedInfo').show();
-				$(this).parent().parent().find('span.tableInfo').hide();
-			};
-			$(this).parent().parent().parent().find('.dataTable').fadeToggle();
-			
-			
-		});
+	searchMenu();		
+	});
+});
+//End Publications table
 
-	};
+//Menu functions
+	
+$(document).ready(function(){		
+	//Open menu	
+	$('span.dropdownOpen').click(function() {
+		$('div.dropdown-content').toggle();
+	});
+
+	//Make keypress produce click
+	$('span.dropdownOpen, .ui-menu-item, a.more, a.fewer, span.details-control, span#clearSearch').unbind('keypress').keypress(function (e) {
+		var key = e.which;
+		if(key == 13)  // the enter key code
+	{
+		$(this).click();
+		return false;  
 	}
-	searchMenu();
-} ;
+});
+ //end menu section	
+ 
 
+
+});
+
+
+
+	
+
+	
+	
+	
