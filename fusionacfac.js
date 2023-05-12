@@ -1,3 +1,25 @@
+// Create a dictionary {faculty:areas}
+var faculty_info_list = {};
+$.ajax({
+	url: `https://sheets.googleapis.com/v4/spreadsheets/1nKPgpNotU2NRH7fY-_bAjvFEc95M3MF_5uREiMyvoiw/values/faculty!A:G?key=REDACTED`,
+	type: "GET",
+	async: false, //important
+	success: function(data) {
+		data.values.forEach(function(item) {
+			// if Areas column is filled, put it into the dict
+			if (typeof item[6] !== "undefined") {
+				faculty_info_list[item[0]] = item[6];
+			} else { 
+				faculty_info_list[item[0]] = "";
+			}
+			
+		});
+	},
+	error: function(error) {
+		console.log(`Error ${error}`);
+	}
+})
+
 //Get any search parameters from the URL
 function getURLParameter(name) {
   return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||""
@@ -193,131 +215,160 @@ window.onload = function() {
 		
 	//Experiential Table
 	var experientialTable = $('#experientialData').DataTable( {
-			"dom": 't',//remove default search input
-			"language":{
-				"zeroRecords": ""
-			},
-			"ajax": {
+		"dom": 't',//remove default search input
+		"language":{
+			"zeroRecords": ""
+		},
+		"ajax": {
 			"url": "/content/dam/bc1/schools/law/js/fusion/json/experientialData.json",
 			"dataSrc":""
-			},
-			"deferRender": true,
-			  "columns": [
-				{ "data": "Title"},
-				{ "data": "Category" },
-				{ "data": "CategorySortOrder" },
-				{ "data": "URL" },
-				{ "data": "Description" },
-				{"data": "Area"}
-				],
+		},
+		"deferRender": true,
+		"columns": [
+			{ "data": "Title"},
+			{ "data": "Category" },
+			{ "data": "CategorySortOrder" },
+			{ "data": "URL" },
+			{ "data": "Description" },
+			{"data": "Area"}
+		],
 		"order": [[2,'asc', 0, 'asc']],
 		"pageLength": 10,
 		columnDefs: [
-		{ "targets": 0, "orderable": false },
-        { "targets": [1,2,3,4,5], "visible": false},
-		{ "targets":0, "render": function ( data, type, full, meta ) {
-      return '<a class="experientialLink" href="#"><span class="innerLink">'+data+'</span></a>';}},
-     	{ "targets":4, "render": function ( data, type, full, meta ) {
-	return data.replace(/business | civil | litigation | constitutional | criminal | procedure | environmental | experiential | health | international | comparative | immigration | real estate | tax /gi,"");}}
+			{ "targets": 0, "orderable": false },
+        	{ "targets": [1,2,3,4,5], "visible": false},
+			{ "targets":0, "render": function ( data, type, full, meta ) {
+    			return '<a class="experientialLink" href="#"><span class="innerLink">'+data+'</span></a>';}},
+     		{ "targets":4, "render": function ( data, type, full, meta ) {
+				return data.replace(/business | civil | litigation | constitutional | criminal | procedure | environmental | experiential | health | international | comparative | immigration | real estate | tax /gi,"");}}
 		],	
-	"drawCallback": function(settings) {
-		
-		 var api = this.api();
-		var data=api.rows({page:'current'}).data();
-		
-		 for (i = 0; i < data.length; i++) {
+		"drawCallback": function(settings) {
+			var api = this.api();
+			var data=api.rows({page:'current'}).data();
+			
+			for (i = 0; i < data.length; i++) {
 				var child=i+1;
-				if (!!data[i].URL)
-				{
+				if (!!data[i].URL) {
 					$("#experientialData tr:nth-child("+child+") a.experientialLink").attr('href',data[i].URL);
-				}
-				else {
+				} else {
 					$("#experientialData tr:nth-child("+child+") span.innerLink").unwrap(); 
 				}
-				
-            }
-		 
-		 //Group items by type
-           var rows = api.rows( {page:'current'} ).nodes();
-           var last=null;
-            api.column(1, {page:'current'} ).data().each( function ( group, i ) {
-                if ( last !== group ) {
-                    $(rows).eq( i ).before(
-                        '<tr class="group"><td><h4>'+group+'</h4></td></tr>'
-                    );
- 
-                    last = group;
-                }
-				
+			}
 			
-            } );
+			//Group items by type
+			var rows = api.rows( {page:'current'} ).nodes();
+			var last=null;
+			api.column(1, {page:'current'} ).data().each( function ( group, i ) {
+				if ( last !== group ) {
+					$(rows).eq( i ).before('<tr class="group"><td><h4>'+group+'</h4></td></tr>');
+					last = group;
+				}
+			});
 			
-
-			
-		//Hide the entire table plus the header if there are no results	
-		if ($("div#experiential").find("td.dataTables_empty").length) {
-			$("div#experiential").find("h3").hide();
-		}
-		else { 
-			$("div#experiential").find("h3").show();
-		};
-		
-		}
-
-		//end drawCallBack
-		} );
+			//Hide the entire table plus the header if there are no results	
+			if ($("div#experiential").find("td.dataTables_empty").length) {
+				$("div#experiential").find("h3").hide();
+			} else { 
+				$("div#experiential").find("h3").show();
+			};
+		}//end drawCallBack
+	}); // end experientialTable
 		
 	//Publications Table	
 	var publicationsTable = $('#publicationsData').DataTable( {
-			"dom": 't',//remove default search input
-			"ajax": {
-			"url": "/content/dam/bc1/schools/law/js/fusion/json/publicationsData.json",
-			"dataSrc":""
-			},
-			"deferRender": true,
-			  "columns": [
-				{ "data": "year"},
-				{ "data": "title"},
-				{ "data": "publication"},
-				{ "data": "name"},
-				{ "data": "disciplines"},
-				{ "data": "URL"},
-				{ "data": "priority"},
-				{ "data": "book"},
-				{ "data": "fusionareas"}
-				],
-		"order": [[6,'asc'],[0,'desc'],[1,'asc']],
+		"dom": 't',//remove default search input
+		"ajax": { // pull data from google sheet via Sheets API V4
+			url:`https://sheets.googleapis.com/v4/spreadsheets/1nKPgpNotU2NRH7fY-_bAjvFEc95M3MF_5uREiMyvoiw/values/pubs!A:N?key=REDACTED`,
+			// set caching to true
+			cache: true,
+			// manipulate the Gsheet data
+			"dataSrc": function(json) {
+				// spreadsheet data lives in an array with the name values
+				var myData = json['values'];
+						
+				// rewrite data to an object with key-value pairs.
+				// This is also a chance to rename or ignore columns
+				myData = myData.map(function( n ) {
+					myObject = {
+						year:n[11],
+						title:n[4],
+						standalonework:n[5],
+						publisher:n[6],
+						author:n[2],
+						coauthors:n[3],
+						url:n[12],
+						priority:n[13],							
+						areas:faculty_info_list[n[0]]
+					};
+					return myObject;
+				}); // now myData is an array of objects of key-value pairs
+				//remove the first row, which contains the orginal column headers
+				myData.splice(0,1); 
+				return myData;
+			} // END dataSrc
+		}, // END ajax
+		"deferRender": true,
+		'columns': [
+			{ "data": "year"},
+			{ "data": "title"},
+			{ "data": "standalonework"},
+			{ "data": "publisher"},
+			{ "data": "author"},
+			{ "data": "coauthors"},
+			{ "data": "url"},
+			{ "data": "priority"},
+			{ "data": "areas"}
+		],
+		"order": [[0,'desc'],[7,'asc'], [2, 'asc'], [1, 'asc']],
 		"pageLength": 4,
 		columnDefs: [
-		{ "targets": 1, "orderable": false },
-        { "targets": [0,2,3,4,5,6,7,8], "visible": false},
-		{ "targets":1, "render": function ( data, type, full, meta ) {
-      return '<a>'+data+'</a>';}}
-		],	
-	"drawCallback": function(settings) {
-		//Add URLs to any links and alt tags to any images in each row, using the URLs in column 2 of the table for the links and the faculty Name field for the alt tags
-		var api = this.api();
-		var data=api.rows({page:'current'}).data();
+			{ "targets": 1, "orderable": false },
+			{ "targets": [0,2,3,4,5,6,7,8], "visible": false},
+			{ "targets":1, "render": function ( data, type, full, meta ) {return '<a>'+data+'</a>';}}
+		],
+		"drawCallback": function(settings) {
+			//Add URLs to any links and alt tags to any images in each row, using the URLs in column 2 of the table for the links and the faculty Name field for the alt tags
+			var api = this.api();
+			var data=api.rows({page:'current'}).data();
 			for (i = 0; i < data.length; i++) {
-				
+	
 				var child=i+1;
 				$("#publicationsData tr:nth-child("+child+")").find('.namePub').remove();
-				$("#publicationsData tr:nth-child("+child+")").find('a').attr('href',data[i].URL);
-				if (data[i].book == 1) { //italicize publication/publisher for journal articles but not for books
-				$("#publicationsData tr:nth-child("+child+")").find('td').append('<p class="namePub">'+data[i].name+', '+data[i].publication+', '+data[i].year+'</p>');
+				$("#publicationsData tr:nth-child("+child+")").find('a').addClass('publicationTitle');
+				
+				//format coauthor information
+				coauthor_info = '';
+				var coauthors_list = data[i].coauthors.split(';');
+	
+				if (coauthors_list.length === 1 && coauthors_list[0] !== '') {
+					coauthor_info = ` with ${coauthors_list[0]}`;
+				} else if (coauthors_list.length > 1) {
+					coauthors_before_and = coauthors_list.slice(0,-1);
+					coauthor_info = ` with ${coauthors_before_and.join(", ")} and ${coauthors_list.pop()}`;
+				}
+	
+				// making DOMs of books and 'others' (reports, blog posts etc) agree with articles, book chapters, book reviews
+				if (data[i].priority == 1 || data[i].priority == 5) {
+					$("#publicationsData tr:nth-child("+child+")").find('a').html(data[i].standalonework);
+					$("#publicationsData tr:nth-child("+child+")").find('td').append('<p class="namePub">'+data[i].author+coauthor_info+ ', '+data[i].publisher+', '+data[i].year+'</p>');
 				}
 				else {
-				$("#publicationsData tr:nth-child("+child+")").find('td').append('<p class="namePub">'+data[i].name+', <em>'+data[i].publication+'</em>, '+data[i].year+'</p>');
+					$("#publicationsData tr:nth-child("+child+")").find('td').append('<p class="namePub">'+data[i].author+coauthor_info+ ', <i>'+data[i].standalonework+'</i>, '+data[i].year+'</p>');
 				}
-            }
-			
-			
-			
-		
-	}
-		//end drawCallBack
+	
+				// removing links from works that don't have a url
+				if (data[i].url.length > 0) {
+					$("#publicationsData tr:nth-child("+child+")").find('a').attr('href',data[i].url);
+				} else {
+					$("#publicationsData tr:nth-child("+child+")").find('a').addClass('no-url');
+				}
+				
+	
+			}
+	
+		}//end drawCallBack
 
-		});		
+	});		
 
 	var tables = $('.dataTable').DataTable(); //Needed to let inputs controll all tables 
 
