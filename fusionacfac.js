@@ -233,7 +233,7 @@ window.onload = function() {
 			var last=null;
 			api.column(1, { page:'current' } ).data().each( function ( group, i ) {
 				if (last !== group) {
-					$(rows).eq( i ).before('<tr class="group"><td><h4>'+group+'</h4></td></tr>');
+					$(rows).eq( i ).before('<tr class="group"><td>'+group+'</td></tr>');
 					last = group;
 				}
 			});

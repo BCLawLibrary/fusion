@@ -42,6 +42,14 @@ ul#areaSearch {
 	color:#fff;
 }
 
+#experientialData tr.group {
+	font-weight:bold;
+}
+
+#experientialData tr + .group td { /* bootleg solution to :not(:first-of:(tr.group)) */
+	margin-top: 20px;
+}
+
 #fusionTables {
 	display:none;
 	position: absolute;
@@ -57,8 +65,12 @@ ul#areaSearch {
 }
 #fusionTables a {
 	color:#fff;
+}
+
+#fusionTables a.publicationTitle {
 	font-weight: bold;
 }
+
 #fusionTables a:hover {
 	text-decoration:underline;
 }
