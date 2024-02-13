@@ -10,7 +10,7 @@
 // For assigning areas to works based on faculty author
 var faculty_info_list = {};
 $.ajax({
-	url: `https://sheets.googleapis.com/v4/spreadsheets/1nKPgpNotU2NRH7fY-_bAjvFEc95M3MF_5uREiMyvoiw/values/faculty!A:G?key=AIzaSyD8Y28YJpVhE4XlVlOoA74Ws47YdPz5nGA`,
+	url: `https://sheets.googleapis.com/v4/spreadsheets/1nKPgpNotU2NRH7fY-_bAjvFEc95M3MF_5uREiMyvoiw/values/faculty!A:G?key=REDACTED`,
 	type: "GET",
 	async: false, //important
 	success: function(data) {
@@ -573,7 +573,7 @@ window.onload = function() {
 
 		// Load data for table content from an Ajax source
 		"ajax": { // Pull data from Google Sheet via Sheets API V4
-			url:`https://sheets.googleapis.com/v4/spreadsheets/1nKPgpNotU2NRH7fY-_bAjvFEc95M3MF_5uREiMyvoiw/values/pubs!A:N?key=AIzaSyD8Y28YJpVhE4XlVlOoA74Ws47YdPz5nGA`,
+			url:`https://sheets.googleapis.com/v4/spreadsheets/1nKPgpNotU2NRH7fY-_bAjvFEc95M3MF_5uREiMyvoiw/values/pubs!A:N?key=REDACTED`,
 			// Set caching to true
 			cache: true,
 			// Manipulate the Gsheet data

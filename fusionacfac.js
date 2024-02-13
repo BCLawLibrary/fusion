@@ -10,7 +10,7 @@
 // last edited 13 February 2024 10:29AM
 var faculty_info_list = {};
 $.ajax({
-	url: `https://sheets.googleapis.com/v4/spreadsheets/1nKPgpNotU2NRH7fY-_bAjvFEc95M3MF_5uREiMyvoiw/values/faculty!A:G?key=AIzaSyD8Y28YJpVhE4XlVlOoA74Ws47YdPz5nGA`,
+	url: `https://sheets.googleapis.com/v4/spreadsheets/1nKPgpNotU2NRH7fY-_bAjvFEc95M3MF_5uREiMyvoiw/values/faculty!A:G?key=REDACTED`,
 	type: "GET",
 	async: false, //important
 	success: function(data) {
@@ -252,7 +252,7 @@ window.onload = function() {
 	var publicationsTable = $('#publicationsData').DataTable( {
 		"dom": 't',// Remove default search input
 		"ajax": { // Pull data from Google Sheet via Sheets API V4
-			url:`https://sheets.googleapis.com/v4/spreadsheets/1nKPgpNotU2NRH7fY-_bAjvFEc95M3MF_5uREiMyvoiw/values/pubs!A:N?key=AIzaSyD8Y28YJpVhE4XlVlOoA74Ws47YdPz5nGA`,
+			url:`https://sheets.googleapis.com/v4/spreadsheets/1nKPgpNotU2NRH7fY-_bAjvFEc95M3MF_5uREiMyvoiw/values/pubs!A:N?key=REDACTED`,
 			// Set caching to true
 			cache: true,
 			// Manipulate Google Sheet data
