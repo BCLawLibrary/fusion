@@ -4,11 +4,13 @@
  * This version is displayed on its own page (Fusion Search), and has a search function. 
  */
 
+// last edited 13 Feb 2023 10:28AM
+
 // Create a dictionary {faculty:areas} for var publicationsTable
 // For assigning areas to works based on faculty author
 var faculty_info_list = {};
 $.ajax({
-	url: `https://sheets.googleapis.com/v4/spreadsheets/1nKPgpNotU2NRH7fY-_bAjvFEc95M3MF_5uREiMyvoiw/values/faculty!A:G?key=REDACTED`,
+	url: `https://sheets.googleapis.com/v4/spreadsheets/1nKPgpNotU2NRH7fY-_bAjvFEc95M3MF_5uREiMyvoiw/values/faculty!A:G?key=AIzaSyD8Y28YJpVhE4XlVlOoA74Ws47YdPz5nGA`,
 	type: "GET",
 	async: false, //important
 	success: function(data) {
@@ -571,7 +573,7 @@ window.onload = function() {
 
 		// Load data for table content from an Ajax source
 		"ajax": { // Pull data from Google Sheet via Sheets API V4
-			url:`https://sheets.googleapis.com/v4/spreadsheets/1nKPgpNotU2NRH7fY-_bAjvFEc95M3MF_5uREiMyvoiw/values/pubs!A:N?key=REDACTED`,
+			url:`https://sheets.googleapis.com/v4/spreadsheets/1nKPgpNotU2NRH7fY-_bAjvFEc95M3MF_5uREiMyvoiw/values/pubs!A:N?key=AIzaSyD8Y28YJpVhE4XlVlOoA74Ws47YdPz5nGA`,
 			// Set caching to true
 			cache: true,
 			// Manipulate the Gsheet data
@@ -579,14 +581,14 @@ window.onload = function() {
 				var myData = json['values'];
 				myData = myData.map(function( n ) {
 					myObject = {
-						year:n[11],
-						title:n[4],
-						standalonework:n[5],
-						publisher:n[6],
-						author:n[2],
-						coauthors:n[3],
-						url:n[12],
-						priority:n[13],
+						year:n[12],
+						partwork:n[5],
+						wholework:n[6],
+						publisher:n[7],
+						author:n[3],
+						coauthors:n[4],
+						url:n[13],
+						priority:n[2],
 						areas:faculty_info_list[n[0]]
 					};
 					return myObject;
@@ -599,12 +601,19 @@ window.onload = function() {
 		"deferRender": true,
 		'columns': [
 			{ "data": "year"},
-			{ "data": "title"},
-			{ "data": "standalonework"},
+			{ "data": "partwork"},
+			{ "data": "wholework"},
 			{ "data": "publisher"},
 			{ "data": "author"},
 			{ "data": "coauthors"},
-			{ "data": "url"},
+			{ "data": "url", // the render field is necessary
+			  render: function(data, type, row) {
+					if ((data === undefined) || (data === null)) {
+						data = "";
+					} 
+					return data;
+			  }
+			},
 			{ "data": "priority"},
 			{ "data": "areas"}
 		],
@@ -613,7 +622,7 @@ window.onload = function() {
 		columnDefs: [
 			{ "targets": 1, "orderable": false },
 			{ "targets": [0,2,3,4,5,6,7,8], "visible": false},
-			{ "targets":1, "render": function ( data, type, full, meta ) {return '<a>'+data+'</a>';}}
+			{ "targets": 1, "render": function ( data, type, full, meta ) {return '<a>'+data+'</a>';}}
 		],
 		"initComplete": function(settings) {
 			var api = this.api();
@@ -656,18 +665,18 @@ window.onload = function() {
 
 				// Make DOMs of books and 'others' (reports, blog posts etc) agree with articles, book chapters, book reviews
 				if (data[i].priority == 1 || data[i].priority == 5) {
-					$("#publicationsData tr:nth-child("+child+")").find('a').html(data[i].standalonework);
+					$("#publicationsData tr:nth-child("+child+")").find('a').html(data[i].wholework);
 					$("#publicationsData tr:nth-child("+child+")").find('td').append('<p class="namePub">'+data[i].author+coauthor_info+ ', '+data[i].publisher+', '+data[i].year+'</p>');
 				}
 				else {
-					$("#publicationsData tr:nth-child("+child+")").find('td').append('<p class="namePub">'+data[i].author+coauthor_info+ ', <i>'+data[i].standalonework+'</i>, '+data[i].year+'</p>');
+					$("#publicationsData tr:nth-child("+child+")").find('td').append('<p class="namePub">'+data[i].author+coauthor_info+ ', <i>'+data[i].wholework+'</i>, '+data[i].year+'</p>');
 				}
 
 				// Remove links from works that don't have a URL
-				if (data[i].url.length > 0) {
-					$("#publicationsData tr:nth-child("+child+")").find('a').attr('href',data[i].url);
-				} else {
+				if ((data[i].url === "") || (data[i].url === undefined)) {
 					$("#publicationsData tr:nth-child("+child+")").find('a').addClass('no-url');
+				} else {
+					$("#publicationsData tr:nth-child("+child+")").find('a').attr('href',data[i].url);
 				}
 			}
 
