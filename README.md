@@ -3,4 +3,4 @@ Federated search over faculty members, courses, experiential learning opportunit
 
 Relies on jQuery and DataTables (https://datatables.net/).
 
-As of 2024, the searchable interactive web app (fusion.js) and the simplified component for use as a component on a webpage (fusionacfac.js) are live.
+As of 2023, only the searchable interactive web app (fusion.js, on https://www.bc.edu/bc-web/schools/law/academics-faculty/fusion-search.html) and the simplified component for use as a component on a webpage (fusionacfac.js, on https://www.bc.edu/content/bc-web/schools/law/academics-faculty.html) are live.

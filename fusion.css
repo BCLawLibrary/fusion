@@ -1,3 +1,7 @@
+#experientialData .emptyExpSmall, #experientialData .preLoadExpSmall, #experientialData .empty-controlExp {
+  font-size: 15px;
+}
+
 .publicationTitle {
   font-weight: bold;
 }
