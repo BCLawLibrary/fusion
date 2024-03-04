@@ -33,6 +33,16 @@ $.ajax({
 function getURLParameter(name) {
 	return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||""
 }
+
+// trim asterisk from right side (for within-year custom ordering)
+function rtrim(x, characters) {
+    var start = 0;
+    var end = x.length - 1;
+    while (characters.indexOf(x[end]) >= 0) {
+      end -= 1;
+    }
+    return x.substr(0, end + 1);
+}
   
 myKey = getURLParameter('key').replace("and","&");
 
@@ -573,7 +583,7 @@ window.onload = function() {
 
 		// Load data for table content from an Ajax source
 		"ajax": { // Pull data from Google Sheet via Sheets API V4
-			url:`https://sheets.googleapis.com/v4/spreadsheets/1nKPgpNotU2NRH7fY-_bAjvFEc95M3MF_5uREiMyvoiw/values/pubs!A:N?key=REDACTED`,
+			url:`https://sheets.googleapis.com/v4/spreadsheets/1nKPgpNotU2NRH7fY-_bAjvFEc95M3MF_5uREiMyvoiw/values/pubs!A:N?key=AIzaSyD8Y28YJpVhE4XlVlOoA74Ws47YdPz5nGA`,
 			// Set caching to true
 			cache: true,
 			// Manipulate the Gsheet data
@@ -666,10 +676,10 @@ window.onload = function() {
 				// Make DOMs of books and 'others' (reports, blog posts etc) agree with articles, book chapters, book reviews
 				if (data[i].priority == 1 || data[i].priority == 5) {
 					$("#publicationsData tr:nth-child("+child+")").find('a').html(data[i].wholework);
-					$("#publicationsData tr:nth-child("+child+")").find('td').append('<p class="namePub">'+data[i].author+coauthor_info+ ', '+data[i].publisher+', '+data[i].year+'</p>');
+					$("#publicationsData tr:nth-child("+child+")").find('td').append('<p class="namePub">'+data[i].author+coauthor_info+ ', '+data[i].publisher+' ('+rtrim(data[i].year, '* ')+')</p>');
 				}
 				else {
-					$("#publicationsData tr:nth-child("+child+")").find('td').append('<p class="namePub">'+data[i].author+coauthor_info+ ', <i>'+data[i].wholework+'</i>, '+data[i].year+'</p>');
+					$("#publicationsData tr:nth-child("+child+")").find('td').append('<p class="namePub">'+data[i].author+coauthor_info+ ', <i>'+data[i].wholework+'</i> ('+rtrim(data[i].year, '* ')+')</p>');
 				}
 
 				// Remove links from works that don't have a URL
