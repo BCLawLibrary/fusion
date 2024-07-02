@@ -10,7 +10,7 @@
 // last edited 13 February 2024 10:29AM
 var faculty_info_list = {};
 $.ajax({
-	url: `https://sheets.googleapis.com/v4/spreadsheets/1nKPgpNotU2NRH7fY-_bAjvFEc95M3MF_5uREiMyvoiw/values/faculty!A:G?key=REDACTED`,
+	url: `https://sheets.googleapis.com/v4/spreadsheets/1nKPgpNotU2NRH7fY-_bAjvFEc95M3MF_5uREiMyvoiw/values/faculty!A:G?key=AIzaSyD8Y28YJpVhE4XlVlOoA74Ws47YdPz5nGA`,
 	type: "GET",
 	async: false, //important
 	success: function(data) {
@@ -334,7 +334,7 @@ window.onload = function() {
 				}
 	
 				// Make DOMs of books and 'others' (reports, blog posts etc) agree with articles, book chapters, book reviews
-				if (data[i].priority == 1 || data[i].priority == 5) {
+				if (data[i].priority == 1 || data[i].priority == 6) {
 					$("#publicationsData tr:nth-child("+child+")").find('a').html(data[i].wholework);
 					$("#publicationsData tr:nth-child("+child+")").find('td').append('<p class="namePub">'+data[i].author+coauthor_info+ ', '+data[i].publisher+' ('+rtrim(data[i].year, '* ')+')</p>');
 				}
