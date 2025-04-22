@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="./js/jquery-3.7.1.js"></script>
+    <script src="./js/jquery-ui.js"></script>
+    <script src="./js/papaparse.min.js"></script>
+    <script src="./js/datatables.min.js"></script>
+    <script src="./js/fusion_new.js"></script>
+    <link rel="stylesheet" type="text/css" href="./css/fusion_new.css" />
+  </head>
+  <body>
+    <div id="fusion">
+      <div class="fusion__top-row">
+        <div class="controls">
+          <div class="controls__text">Select an area of the law:</div>
+
+          <input
+            class="controls__search dt-input"
+            autocomplete="off"
+            placeholder="Search here or select an area below"
+          />
+          <span class="controls__clear" style="display: none">X</span>
+        </div>
+
+        <div class="controls__dropdown">
+          <ul class="controls__dropdown-menu">
+            <li class="controls__dropdown-item controls__dropdown-item--all">
+              <b>All Areas</b>
+            </li>
+            <li class="controls__dropdown-item">
+              Administrative & Government Law
+            </li>
+            <li class="controls__dropdown-item">Business Law</li>
+            <li class="controls__dropdown-item">Civil & Human Rights Law</li>
+            <li class="controls__dropdown-item">
+              Civil Litigation & Procedure
+            </li>
+            <li class="controls__dropdown-item">
+              Clinical & Experiential Education
+            </li>
+            <li class="controls__dropdown-item">Constitutional Law</li>
+            <li class="controls__dropdown-item">Corporate & Securities Law</li>
+            <li class="controls__dropdown-item">Criminal Law & Procedure</li>
+            <li class="controls__dropdown-item">Environmental Law</li>
+            <li class="controls__dropdown-item">
+              Ethics & Professional Responsibility
+            </li>
+            <li class="controls__dropdown-item">Family & Estate Law</li>
+            <li class="controls__dropdown-item">Health Law</li>
+            <li class="controls__dropdown-item">Immigration Law</li>
+            <li class="controls__dropdown-item">
+              Intellectual Property & Technology Law
+            </li>
+            <li class="controls__dropdown-item">
+              International & Comparative Law
+            </li>
+            <li class="controls__dropdown-item">Labor & Employment Law</li>
+            <li class="controls__dropdown-item">
+              Legal History & Jurisprudence
+            </li>
+            <li class="controls__dropdown-item">Real Estate Law</li>
+            <li class="controls__dropdown-item">Tax Law</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="fusion__columns">
+        <div class="fusion__left-column">
+          <div class="fusion__table fusion__table--faculty">
+            <h3>Faculty</h3>
+            <div class="fusion__loading">
+              <img src="loading.gif" alt="Loading..." />
+            </div>
+
+            <table class="fusion__table-content" id="faculty-table"></table>
+          </div>
+        </div>
+
+        <div class="fusion__right-column">
+          <div class="fusion__table fusion__table--courses">
+            <h3>Courses</h3>
+            <div class="fusion__loading">
+              <img src="loading.gif" alt="Loading..." />
+            </div>
+            <table class="fusion__table-content" id="courses-table"></table>
+          </div>
+
+          <div class="fusion__table fusion__table--experiential">
+            <h3>Experiential Learning</h3>
+            <div class="fusion__loading">
+              <img src="loading.gif" alt="Loading..." />
+            </div>
+            <table
+              class="fusion__table-content"
+              id="experiential-table"
+            ></table>
+          </div>
+
+          <div class="fusion__table fusion__table--publications">
+            <h3>Publications</h3>
+            <div class="fusion__loading">
+              <img src="loading.gif" alt="Loading..." />
+            </div>
+            <table class="fusion__table-content" id="pubs-table"></table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
