@@ -13,13 +13,18 @@ function initializeFacultyTable(facultyData) {
   var data = facultyData.data.map(Object.values);
   const custom_columns = [
     { title: "Hash", visible: false, searchable: false },
-    { title: "Name", searchable: false },
+    { title: "Name", visible: false },
     { title: "Title", visible: false, searchable: false },
     { title: "Image", visible: false, searchable: false },
     { title: "Profile", visible: false, searchable: false },
     { title: "CV", visible: false, searchable: false },
     { title: "Areas", visible: false },
+    { title: "Display", searchable: false },
   ];
+
+  for (let i in data) {
+    data[i].push(formatFaculty(data[i])); // Fill in CitationDisplay column
+  }
 
   const table = new DataTable("#faculty-table", {
     dom: "fit",
@@ -29,8 +34,29 @@ function initializeFacultyTable(facultyData) {
     pageLength: 6,
     language: {
       lengthMenu: "Showing _MENU_ faculty",
-      info: "<span class='table-info'><p class='dataInfo'>Showing _END_ of _TOTAL_ </p><a href='#' id='facultyAll' tabindex='0'>All faculty</a><a href='#' id='facultyFewer' class='fewer' tabindex='0'>Fewer faculty</a></span>",
+      info: `<span class="table-info"
+              ><p class="data-info">Showing _END_ of _TOTAL_</p>
+              <a href="#" id="facultyAll" tabindex="0">
+                All faculty
+                <i class="fa-solid fa-caret-down"></i>
+              </a>
+              <a href="#" id="facultyFewer" class="fewer" tabindex="0">
+                Fewer faculty
+                <i class="fa-solid fa-caret-up"></i>
+              </a>
+            </span>`,
       infoFiltered: "",
+    },
+    initComplete: function () {
+      var api = this.api();
+      var more = $("<a>")
+        .addClass("showmore publications-showmore")
+        .html(`Show more <i class="fa-solid fa-caret-down"></i>`);
+      $("#faculty-table_wrapper").append(more);
+      $(".publications-showmore").click(function () {
+        var currentLength = api.page.len();
+        facultyTable.page.len(currentLength + 6).draw();
+      });
     },
     drawCallback: function () {
       $("#facultyAll").click(function () {
@@ -67,8 +93,19 @@ function initializeCoursesTable(coursesData) {
     pageLength: 6,
     language: {
       lengthMenu: "Showing _MENU_ faculty",
-      info: "<span class='table-info'><p class='data-info'>Showing _END_ of _TOTAL_ </p><a href='#' id='courses-all' tabindex='0'>All courses</a><a href='#' id='courses-fewer' class='fewer' tabindex='0'>Fewer courses</a></span>",
+      info: "<span class='table-info'><p class='data-info'>Showing _END_ of _TOTAL_ </p><a href='#' id='courses-all' tabindex='0'>All courses <i class='fa-solid fa-caret-down'></i></a><a href='#' id='courses-fewer' class='fewer' tabindex='0'>Fewer courses <i class='fa-solid fa-caret-up'></i></a></span>",
       infoFiltered: "",
+    },
+    initComplete: function () {
+      var api = this.api();
+      var more = $("<a>")
+        .addClass("showmore courses-showmore")
+        .html(`Show more <i class="fa-solid fa-caret-down"></i>`);
+      $("#courses-table_wrapper").append(more);
+      $(".courses-showmore").click(function () {
+        var currentLength = api.page.len();
+        coursesTable.page.len(currentLength + 6).draw();
+      });
     },
     drawCallback: function () {
       $("#courses-all").click(function () {
@@ -105,8 +142,29 @@ function initializeExperientialTable(experientialData) {
     pageLength: 6,
     language: {
       lengthMenu: "Showing _MENU_ faculty",
-      info: "<span class='table-info'><p class='data-info'>Showing _END_ of _TOTAL_ </p><a href='#' id='experiential-all' tabindex='0'>All opportunities</a><a href='#' id='experiential-fewer' class='fewer' tabindex='0'>Fewer opportunities</a></span>",
+      info: `<span class="table-info">
+              <p class="data-info">Showing _END_ of _TOTAL_</p>
+              <a href="#" id="experiential-all" tabindex="0">
+                All opportunities
+                <i class="fa-solid fa-caret-down"></i>
+              </a>
+              <a href="#" id="experiential-fewer" class="fewer" tabindex="0">
+                Fewer opportunities
+                <i class="fa-solid fa-caret-up"></i>
+              </a>
+            </span>`,
       infoFiltered: "",
+    },
+    initComplete: function () {
+      var api = this.api();
+      var more = $("<a>")
+        .addClass("showmore experiential-showmore")
+        .html(`Show more <i class="fa-solid fa-caret-down"></i>`);
+      $("#experiential-table_wrapper").append(more);
+      $(".experiential-showmore").click(function () {
+        var currentLength = api.page.len();
+        experientialTable.page.len(currentLength + 6).draw();
+      });
     },
     drawCallback: function () {
       $("#experiential-all").click(function () {
@@ -155,8 +213,19 @@ function initializePubsTable(pubsData) {
     pageLength: 6,
     language: {
       lengthMenu: "Showing _MENU_ faculty",
-      info: "<span class='table-info'><p class='data-info'>Showing _END_ of _TOTAL_ </p><a href='#' id='pubs-all' tabindex='0'>All publications</a><a href='#' id='pubs-fewer' class='fewer' tabindex='0'>Fewer publications</a></span>",
+      info: "<span class='table-info'><p class='data-info'>Showing _END_ of _TOTAL_ </p><a href='#' id='pubs-all' tabindex='0'>All publications <i class='fa-solid fa-caret-down'></i></a><a href='#' id='pubs-fewer' class='fewer' tabindex='0'>Fewer publications <i class='fa-solid fa-caret-up'></a></span>",
       infoFiltered: "",
+    },
+    initComplete: function () {
+      var api = this.api();
+      var more = $("<a>")
+        .addClass("showmore pubs-showmore")
+        .html(`Show more <i class="fa-solid fa-caret-down"></i>`);
+      $("#pubs-table_wrapper").append(more);
+      $(".pubs-showmore").click(function () {
+        var currentLength = api.page.len();
+        pubsTable.page.len(currentLength + 6).draw();
+      });
     },
     drawCallback: function () {
       $("#pubs-all").click(function () {
@@ -175,6 +244,16 @@ function initializePubsTable(pubsData) {
 
   return table;
 }
+
+function formatFaculty(rowData) {
+  let [hash, name, title, image, profile, cv, areas] = rowData;
+
+  return `<div class="faculty-box"><a href="${profile}"><img src="${image}" /></a><a class="faculty-name" href="${profile}">${name}</a></div>`;
+}
+
+function formatCourse(rowData) {}
+function formatExperiential(rowData) {}
+function formatPublication(rowData) {}
 
 $(document).ready(function () {
   const facultyUrl =

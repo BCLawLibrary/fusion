@@ -10,7 +10,16 @@
     <script src="./js/datatables.min.js"></script>
     <script src="./js/fusion_new.js"></script>
     <link rel="stylesheet" type="text/css" href="./css/fusion_new.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
   </head>
+  <style>
+    body {
+      margin: 0 200px;
+    }
+  </style>
   <body>
     <div id="fusion">
       <div class="fusion__top-row">
@@ -70,7 +79,11 @@
       <div class="fusion__columns">
         <div class="fusion__left-column">
           <div class="fusion__table fusion__table--faculty">
-            <h3>Faculty</h3>
+            <div class="table__title">
+              <h3>Faculty</h3>
+              <div class="table__title--underline"></div>
+            </div>
+
             <div class="fusion__loading">
               <img src="loading.gif" alt="Loading..." />
             </div>
@@ -81,7 +94,10 @@
 
         <div class="fusion__right-column">
           <div class="fusion__table fusion__table--courses">
-            <h3>Courses</h3>
+            <div class="table__title">
+              <h3>Courses</h3>
+              <div class="table__title--underline"></div>
+            </div>
             <div class="fusion__loading">
               <img src="loading.gif" alt="Loading..." />
             </div>
@@ -89,7 +105,10 @@
           </div>
 
           <div class="fusion__table fusion__table--experiential">
-            <h3>Experiential Learning</h3>
+            <div class="table__title">
+              <h3>Experiential Learning</h3>
+              <div class="table__title--underline"></div>
+            </div>
             <div class="fusion__loading">
               <img src="loading.gif" alt="Loading..." />
             </div>
@@ -100,7 +119,10 @@
           </div>
 
           <div class="fusion__table fusion__table--publications">
-            <h3>Publications</h3>
+            <div class="table__title">
+              <h3>Publications</h3>
+              <div class="table__title--underline"></div>
+            </div>
             <div class="fusion__loading">
               <img src="loading.gif" alt="Loading..." />
             </div>
