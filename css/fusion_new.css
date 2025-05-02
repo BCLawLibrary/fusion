@@ -152,14 +152,17 @@ h3 {
   border: 1px solid #cccccc;
   text-decoration: none;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .data-info {
   font-size: 0.8em;
   background-color: #f5e1b3;
   color: rgb(85, 85, 85);
-  padding: 0.2em 0.8em;
+  padding: 0.4em 0.8em 0.2em 0.8em;
   border-radius: 1em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .fusion__table-content thead {
@@ -202,4 +205,72 @@ h3 {
   text-transform: uppercase;
   width: fit-content;
   cursor: pointer;
+}
+
+.invisible {
+  display: none;
+}
+
+.course-title,
+.experiential-title {
+  color: #245c8a;
+  width: fit-content;
+}
+
+.course-title:hover,
+.experiential-title:hover {
+  text-decoration: underline;
+}
+.course-dropdown,
+.experiential-dropdown {
+  font-weight: 600;
+  color: green;
+}
+
+.course-dropdown.red,
+.experiential-dropdown.red {
+  color: #8a100b;
+}
+
+.course-description,
+.experiential-description {
+  background-color: #eee;
+  border-top: 3px solid #ccc;
+  padding: 1em;
+  margin-top: 0.5em;
+  margin-bottom: 1em;
+  color: #333;
+  line-height: 1.5em;
+}
+
+#courses-table tr,
+#experiential-table tr {
+  display: block;
+  margin: 0.3em 0;
+}
+
+#experiential-table th {
+  display: block;
+  text-align: left;
+  color: #9d7c6b;
+  margin: 0.5em 0;
+}
+
+#pubs-table {
+  color: rgb(85, 85, 85);
+}
+
+.work-title {
+  font-weight: bold;
+}
+
+.work-title a,
+.work-title span {
+  color: #245c8a;
+}
+
+#pubs-table .work-info {
+  padding-bottom: 1em;
+  margin-bottom: 1em;
+  border-bottom: 1px solid #ececec;
 }

@@ -36,11 +36,11 @@ function initializeFacultyTable(facultyData) {
       lengthMenu: "Showing _MENU_ faculty",
       info: `<span class="table-info"
               ><p class="data-info">Showing _END_ of _TOTAL_</p>
-              <a href="#" id="facultyAll" tabindex="0">
+              <a id="facultyAll" tabindex="0">
                 All faculty
                 <i class="fa-solid fa-caret-down"></i>
               </a>
-              <a href="#" id="facultyFewer" class="fewer" tabindex="0">
+              <a id="facultyFewer" class="fewer" tabindex="0">
                 Fewer faculty
                 <i class="fa-solid fa-caret-up"></i>
               </a>
@@ -80,10 +80,15 @@ function initializeCoursesTable(coursesData) {
   var data = coursesData.data.map(Object.values);
   const custom_columns = [
     { title: "Number", visible: false, searchable: false },
-    { title: "Title", searchable: false },
+    { title: "Title", visible: false },
     { title: "Areas", visible: false },
     { title: "Description", visible: false, searchable: false },
+    { title: "CourseDisplay", searchable: true },
   ];
+
+  for (let i in data) {
+    data[i].push(formatCourse(data[i]));
+  }
 
   const table = new DataTable("#courses-table", {
     dom: "fit",
@@ -93,7 +98,7 @@ function initializeCoursesTable(coursesData) {
     pageLength: 6,
     language: {
       lengthMenu: "Showing _MENU_ faculty",
-      info: "<span class='table-info'><p class='data-info'>Showing _END_ of _TOTAL_ </p><a href='#' id='courses-all' tabindex='0'>All courses <i class='fa-solid fa-caret-down'></i></a><a href='#' id='courses-fewer' class='fewer' tabindex='0'>Fewer courses <i class='fa-solid fa-caret-up'></i></a></span>",
+      info: "<span class='table-info'><p class='data-info'>Showing _END_ of _TOTAL_ </p><a id='courses-all' tabindex='0'>All courses <i class='fa-solid fa-caret-down'></i></a><a id='courses-fewer' class='fewer' tabindex='0'>Fewer courses <i class='fa-solid fa-caret-up'></i></a></span>",
       infoFiltered: "",
     },
     initComplete: function () {
@@ -121,18 +126,25 @@ function initializeCoursesTable(coursesData) {
       });
     },
   });
-
+  initCourseToggle();
   return table;
 }
 
 function initializeExperientialTable(experientialData) {
   var data = experientialData.data.map(Object.values);
   const custom_columns = [
-    { title: "Title", searchable: false },
+    { title: "Title", visible: false, searchable: false },
     { title: "Category", visible: false, searchable: false },
-    { title: "Areas", visible: false },
+    { title: "Areas", visible: false, searchable: false },
+    { title: "CategorySortOrder", visible: false, searchable: false },
+    { title: "URL", visible: false, searchable: false },
     { title: "Description", visible: false, searchable: false },
+    { title: "ExperientialDisplay", searchable: false },
   ];
+
+  for (let i in data) {
+    data[i].push(formatExperiential(data[i]));
+  }
 
   const table = new DataTable("#experiential-table", {
     dom: "fit",
@@ -140,15 +152,23 @@ function initializeExperientialTable(experientialData) {
     data: data,
     columns: custom_columns,
     pageLength: 6,
+    rowGroup: {
+      dataSrc: 1,
+    },
+    orderFixed: [3, "asc"],
+    order: [
+      [1, "asc"],
+      [0, "asc"],
+    ],
     language: {
       lengthMenu: "Showing _MENU_ faculty",
       info: `<span class="table-info">
               <p class="data-info">Showing _END_ of _TOTAL_</p>
-              <a href="#" id="experiential-all" tabindex="0">
+              <a id="experiential-all" tabindex="0">
                 All opportunities
                 <i class="fa-solid fa-caret-down"></i>
               </a>
-              <a href="#" id="experiential-fewer" class="fewer" tabindex="0">
+              <a id="experiential-fewer" class="fewer" tabindex="0">
                 Fewer opportunities
                 <i class="fa-solid fa-caret-up"></i>
               </a>
@@ -193,7 +213,7 @@ function initializePubsTable(pubsData) {
     { title: "Author", visible: false, searchable: false },
     { title: "Coauthors", visible: false, searchable: false },
     { title: "Partwork", visible: false, searchable: false },
-    { title: "Wholework", searchable: false },
+    { title: "Wholework", visible: false, searchable: false },
     { title: "Publisher", visible: false, searchable: false },
     { title: "Volume", visible: false, searchable: false },
     { title: "Issue", visible: false, searchable: false },
@@ -203,7 +223,12 @@ function initializePubsTable(pubsData) {
     { title: "Link", visible: false, searchable: false },
     { title: "Notes", visible: false, searchable: false },
     { title: "Areas", visible: false }, // Search only by areas
+    { title: "PubDisplay", searchable: false },
   ];
+
+  for (let i in data) {
+    data[i].push(formatPublication(data[i]));
+  }
 
   const table = new DataTable("#pubs-table", {
     dom: "fit",
@@ -211,9 +236,14 @@ function initializePubsTable(pubsData) {
     data: data,
     columns: custom_columns,
     pageLength: 6,
+    order: [
+      [12, "desc"],
+      [2, "asc"],
+      [16, "asc"],
+    ],
     language: {
       lengthMenu: "Showing _MENU_ faculty",
-      info: "<span class='table-info'><p class='data-info'>Showing _END_ of _TOTAL_ </p><a href='#' id='pubs-all' tabindex='0'>All publications <i class='fa-solid fa-caret-down'></i></a><a href='#' id='pubs-fewer' class='fewer' tabindex='0'>Fewer publications <i class='fa-solid fa-caret-up'></a></span>",
+      info: "<span class='table-info'><p class='data-info'>Showing _END_ of _TOTAL_ </p><a id='pubs-all' tabindex='0'>All publications <i class='fa-solid fa-caret-down'></i></a><a id='pubs-fewer' class='fewer' tabindex='0'>Fewer publications <i class='fa-solid fa-caret-up'></a></span>",
       infoFiltered: "",
     },
     initComplete: function () {
@@ -242,18 +272,191 @@ function initializePubsTable(pubsData) {
     },
   });
 
+  initExperientialToggle();
+
   return table;
 }
 
 function formatFaculty(rowData) {
   let [hash, name, title, image, profile, cv, areas] = rowData;
 
-  return `<div class="faculty-box"><a href="${profile}"><img src="${image}" /></a><a class="faculty-name" href="${profile}">${name}</a></div>`;
+  return `<div class="faculty-box">
+            <a href="${profile}">
+              <img src="${image}" />
+            </a>
+            <a class="faculty-name" href="${profile}">
+              ${name}
+            </a>
+          </div>`;
 }
 
-function formatCourse(rowData) {}
-function formatExperiential(rowData) {}
-function formatPublication(rowData) {}
+function formatCourse(rowData) {
+  let [number, title, areas, description] = rowData;
+
+  return `<div class="course-display">
+            <div class="course-title"><span class="course-dropdown">+ </span>${title}</div>
+            <div class="course-description invisible">
+              [${number}] ${description}
+            </div>
+          </div>`;
+}
+
+function initCourseToggle() {
+  const table = document.querySelector("#courses-table");
+
+  table.addEventListener("click", function (e) {
+    const title = e.target.closest(".course-title");
+    if (!title) return;
+
+    const dropdown = title.querySelector(".course-dropdown");
+    const description = title.nextElementSibling;
+
+    if (description && dropdown) {
+      description.classList.toggle("invisible");
+      dropdown.textContent = description.classList.contains("invisible")
+        ? "+ "
+        : "− ";
+      dropdown.classList.toggle("red");
+    }
+  });
+}
+
+function formatExperiential(rowData) {
+  let [title, category, area, categorySortOrder, url, description] = rowData;
+  return `<div class="experiential-display">
+            <div class="experiential-title"><span class="experiential-dropdown">+ </span>${title}</div>
+            <div class="experiential-description invisible">
+              ${description}
+            </div>
+          </div>`;
+}
+
+function initExperientialToggle() {
+  const table = document.querySelector("#experiential-table");
+
+  table.addEventListener("click", function (e) {
+    const title = e.target.closest(".experiential-title");
+    if (!title) return;
+
+    const dropdown = title.querySelector(".experiential-dropdown");
+    const description = title.nextElementSibling;
+
+    if (description && dropdown) {
+      description.classList.toggle("invisible");
+      dropdown.textContent = description.classList.contains("invisible")
+        ? "+ "
+        : "− ";
+      dropdown.classList.toggle("red");
+    }
+  });
+}
+
+function formatPublication(rowData) {
+  // Destructure rowData for clarity
+  let [
+    hash,
+    doctype,
+    priority,
+    author,
+    coauthors,
+    partwork,
+    wholework,
+    publisher,
+    vol,
+    iss,
+    fpage,
+    lpage,
+    year,
+    url,
+    notes,
+  ] = rowData;
+
+  priority = Number(priority);
+  const isStandAlone = priority === 7 || doctype === "book";
+
+  // Helper functions for common patterns
+  const formatTitle = () => {
+    // Determine the base title
+    let title = isStandAlone ? wholework : partwork;
+
+    // Append volume info to title for standalone works
+    if (isStandAlone) {
+      if (vol) title += `, Vol. ${vol}`;
+    }
+    // Make title into link if URL is present
+    if (url) {
+      title = `<div class="work-title"><a href="${url}">${title}</a> <span class="fa-solid fa-square-arrow-up-right"></span></div>`;
+    } else {
+      title = `<div class="work-title">${title}</div>`;
+    }
+    return title;
+  };
+
+  const formatAuthors = (author, coauthors) => {
+    if (!coauthors) return `${author}, `;
+    const coauthorList = coauthors.split(";").map((s) => s.trim());
+    if (coauthorList.length === 1) {
+      return `${author} and ${coauthorList[0]}, `;
+    } else {
+      const lastCoauthor = coauthorList.pop();
+      return `${author}, ${coauthorList.join(", ")} and ${lastCoauthor}, `;
+    }
+  };
+
+  const formatVolumeIssue = (vol, iss) => {
+    // Suppress for standalone works (already added to Title)
+    if (isStandAlone) return "";
+    if (vol && iss) return `, vol. ${vol}, no. ${iss}`;
+    if (vol) return `, vol. ${vol}`;
+    if (iss) return `, no. ${iss}`;
+    return "";
+  };
+
+  const formatPageInfo = (fpage, lpage) => {
+    if (fpage && lpage) return `: ${fpage}–${lpage}`;
+    if (fpage) return `: ${fpage}`;
+    return "";
+  };
+
+  const formatPublisher = (publisher, doctype) => {
+    if (!publisher) return "";
+    return doctype === "bookchapter" ? `. ${publisher}` : ` ${publisher}`;
+  };
+
+  const formatYear = (year) => {
+    return year ? ` (${year.replace("*", "")})` : "";
+  };
+
+  const formatNotes = (notes) => {
+    if (notes !== undefined && notes.trimEnd() !== "") {
+      return `. ${notes}.`;
+    }
+    return "";
+  };
+
+  // Build citation components
+  const coauthorInfo = formatAuthors(author, coauthors);
+  // Leave field empty ("") if standalone work
+  let wholeworkInfo = isStandAlone ? "" : `<i>${wholework}</i>`;
+  if (doctype === "bookchapter") wholeworkInfo = `In ${wholeworkInfo}`;
+  const numberInfo = formatVolumeIssue(vol, iss);
+  const pageInfo = formatPageInfo(fpage, lpage);
+  const publisherInfo = formatPublisher(publisher, doctype);
+  const yearInfo = formatYear(year);
+  const notesInfo = formatNotes(notes);
+
+  // Title information
+  const titleInfo = formatTitle();
+
+  // Combine all components into the citation
+  let citation = `${coauthorInfo}${wholeworkInfo}${numberInfo}${pageInfo}${publisherInfo}${yearInfo}${notesInfo}`;
+
+  // Ensure citation ends with a period
+  if (!citation.endsWith(".")) citation += ".";
+
+  // Wrap in title info
+  return `${titleInfo}<div class="work-info">${citation}</div>`;
+}
 
 $(document).ready(function () {
   const facultyUrl =
