@@ -17,10 +17,10 @@ function getFacultyPriority(rowData) {
   if (status === "emeritus") {
     return 1;
   }
-  if (status === "adjunct") {
+  if (status === "visiting") {
     return 2;
   }
-  if (status === "visiting") {
+  if (status === "adjunct") {
     return 3;
   } else {
     return 4;
@@ -492,7 +492,7 @@ function formatPublication(rowData) {
   const coauthorInfo = formatAuthors(author, coauthors);
   // Leave field empty ("") if standalone work
   let wholeworkInfo = isStandAlone ? "" : `<i>${wholework}</i>`;
-  if (doctype === "bookchapter") wholeworkInfo = `In ${wholeworkInfo}`;
+  if (doctype === "bookchapter") wholeworkInfo = `in ${wholeworkInfo}`;
   const numberInfo = formatVolumeIssue(vol, iss);
   const pageInfo = formatPageInfo(fpage, lpage);
   const publisherInfo = formatPublisher(publisher, doctype);
