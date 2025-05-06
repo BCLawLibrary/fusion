@@ -77,6 +77,9 @@ h3 {
 
 .controls__dropdown-item {
   cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .fusion__loading {
@@ -94,7 +97,11 @@ h3 {
 .fusion__columns {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  column-gap: 5rem;
+  column-gap: 4rem;
+}
+
+.fusion__left-column {
+  margin-bottom: 2rem;
 }
 
 .fusion__right-column {
@@ -153,6 +160,7 @@ h3 {
   text-decoration: none;
   text-transform: uppercase;
   white-space: nowrap;
+  cursor: pointer;
 }
 
 .data-info {
@@ -172,7 +180,7 @@ h3 {
 #faculty-table tbody {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  column-gap: 2rem;
+  column-gap: 1rem;
   row-gap: 2rem;
 }
 
@@ -191,8 +199,48 @@ h3 {
   align-items: center;
 }
 
-.faculty-box img {
+.faculty-image {
+  position: relative;
+  height: fit-content;
+}
+
+.faculty-image img {
+  object-fit: cover;
+  border-bottom: 0.4em solid rgba(185, 155, 115);
+}
+
+.faculty-image.full img {
+  border-bottom: 0.4em solid #428bca;
+}
+
+.faculty-title {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  letter-spacing: 0.04em;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #f7f6f5;
+  text-align: center;
+  padding: 0.2em 0.4em;
+  white-space: nowrap;
+  background: rgba(185, 155, 115, 0.6);
+}
+
+.faculty-title.title-full {
+  display: none;
+}
+
+.faculty-image img {
   width: 100%;
+}
+
+.faculty-name {
+  text-align: center;
+  color: #245c8a;
+  font-weight: 600;
+  text-decoration: none;
 }
 
 .showmore {
@@ -211,10 +259,17 @@ h3 {
   display: none;
 }
 
+#faculty-table tbody,
+#pubs-table colgroup {
+  display: grid;
+  margin-top: 0.3em;
+}
+
 .course-title,
 .experiential-title {
   color: #245c8a;
   width: fit-content;
+  cursor: pointer;
 }
 
 .course-title:hover,
@@ -273,4 +328,29 @@ h3 {
   padding-bottom: 1em;
   margin-bottom: 1em;
   border-bottom: 1px solid #ececec;
+}
+
+@media screen and (max-width: 991px) {
+  .controls__dropdown-menu {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .controls__dropdown-menu {
+    grid-template-columns: 1fr 1fr;
+  }
+  .fusion__columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .controls__dropdown-menu {
+    grid-template-columns: 1fr;
+  }
+
+  .fusion__top-row .controls {
+    font-size: 0.8em;
+  }
 }

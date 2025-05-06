@@ -9,20 +9,40 @@ async function fetchCSVData(url) {
   }
 }
 
+function getFacultyPriority(rowData) {
+  let [hash, name, title, image, profile, cv, areas, status] = rowData;
+  if (status === "full") {
+    return 0;
+  }
+  if (status === "emeritus") {
+    return 1;
+  }
+  if (status === "adjunct") {
+    return 2;
+  }
+  if (status === "visiting") {
+    return 3;
+  } else {
+    return 4;
+  }
+}
 function initializeFacultyTable(facultyData) {
   var data = facultyData.data.map(Object.values);
   const custom_columns = [
     { title: "Hash", visible: false, searchable: false },
-    { title: "Name", visible: false },
+    { title: "Name", visible: false, searchable: false },
     { title: "Title", visible: false, searchable: false },
     { title: "Image", visible: false, searchable: false },
     { title: "Profile", visible: false, searchable: false },
     { title: "CV", visible: false, searchable: false },
     { title: "Areas", visible: false },
+    { title: "Status", visible: false, searchable: false },
+    { title: "Order", visible: false, searchable: false },
     { title: "Display", searchable: false },
   ];
 
   for (let i in data) {
+    data[i].push(getFacultyPriority(data[i]));
     data[i].push(formatFaculty(data[i])); // Fill in CitationDisplay column
   }
 
@@ -32,6 +52,10 @@ function initializeFacultyTable(facultyData) {
     data: data,
     columns: custom_columns,
     pageLength: 6,
+    order: [
+      [8, "asc"],
+      [0, "asc"],
+    ],
     language: {
       lengthMenu: "Showing _MENU_ faculty",
       info: `<span class="table-info"
@@ -80,10 +104,10 @@ function initializeCoursesTable(coursesData) {
   var data = coursesData.data.map(Object.values);
   const custom_columns = [
     { title: "Number", visible: false, searchable: false },
-    { title: "Title", visible: false },
+    { title: "Title", visible: false, searchable: false },
     { title: "Areas", visible: false },
     { title: "Description", visible: false, searchable: false },
-    { title: "CourseDisplay", searchable: true },
+    { title: "CourseDisplay", searchable: false },
   ];
 
   for (let i in data) {
@@ -135,7 +159,7 @@ function initializeExperientialTable(experientialData) {
   const custom_columns = [
     { title: "Title", visible: false, searchable: false },
     { title: "Category", visible: false, searchable: false },
-    { title: "Areas", visible: false, searchable: false },
+    { title: "Areas", visible: false },
     { title: "CategorySortOrder", visible: false, searchable: false },
     { title: "URL", visible: false, searchable: false },
     { title: "Description", visible: false, searchable: false },
@@ -243,7 +267,19 @@ function initializePubsTable(pubsData) {
     ],
     language: {
       lengthMenu: "Showing _MENU_ faculty",
-      info: "<span class='table-info'><p class='data-info'>Showing _END_ of _TOTAL_ </p><a id='pubs-all' tabindex='0'>All publications <i class='fa-solid fa-caret-down'></i></a><a id='pubs-fewer' class='fewer' tabindex='0'>Fewer publications <i class='fa-solid fa-caret-up'></a></span>",
+      info: `<span class='table-info'>
+              <p class='data-info'>
+                Showing _END_ of _TOTAL_ 
+              </p>
+              <a id='pubs-all' tabindex='0'>
+                All publications
+                <i class='fa-solid fa-caret-down'></i>
+              </a>
+              <a id='pubs-fewer' class='fewer' tabindex='0'>
+                Fewer publications 
+                <i class='fa-solid fa-caret-up'></i>
+              </a>
+            </span>`,
       infoFiltered: "",
     },
     initComplete: function () {
@@ -278,13 +314,31 @@ function initializePubsTable(pubsData) {
 }
 
 function formatFaculty(rowData) {
-  let [hash, name, title, image, profile, cv, areas] = rowData;
+  let [hash, name, title, image, profile, cv, areas, status] = rowData;
 
+  if (status === "full") {
+    facultyNameClass = "faculty-full";
+    facultyTitleClass = "title-full";
+  } else if (status === "emeritus") {
+    facultyNameClass = "faculty-emeritus";
+    facultyTitleClass = "title-emeritus";
+  } else if (status === "adjunct") {
+    facultyNameClass = "faculty-adjunct";
+    facultyTitleClass = "title-adjunct";
+  } else if (status === "visiting") {
+    facultyNameClass = "faculty-visiting";
+    facultyTitleClass = "title-visiting";
+  }
+
+  if (image === "") {
+    image = "https://bc.edu/content/dam/bc1/schools/law/js/fusion/unknown.jpg";
+  }
   return `<div class="faculty-box">
-            <a href="${profile}">
+            <a class="faculty-image ${status}" href="${profile}">
               <img src="${image}" />
+              <div class="faculty-title ${facultyTitleClass}">${status} faculty</div>
             </a>
-            <a class="faculty-name" href="${profile}">
+            <a class="faculty-name ${facultyNameClass}" href="${profile}">
               ${name}
             </a>
           </div>`;
@@ -460,7 +514,7 @@ function formatPublication(rowData) {
 
 $(document).ready(function () {
   const facultyUrl =
-    "https://docs.google.com/spreadsheets/d/e/2PACX-1vQgfjiHQuIxuj6_p2vuAskviCh7XPl3J19aZO7Fiyl_cIR__LcTl1WfWCLBqQGmVPXklqOFfE2wwDqs/pub?gid=1091124444&single=true&output=csv";
+    "https://docs.google.com/spreadsheets/d/e/2PACX-1vSSjQnlUvW6KHGojPTxAemBP50aSI5G_DhBTK3ZYwNXUhKpkmOIKSUNLnhPL1WvMirpgo5QUuZZ44ZQ/pub?gid=0&single=true&output=csv";
   const coursesUrl =
     "https://docs.google.com/spreadsheets/d/e/2PACX-1vQgfjiHQuIxuj6_p2vuAskviCh7XPl3J19aZO7Fiyl_cIR__LcTl1WfWCLBqQGmVPXklqOFfE2wwDqs/pub?gid=1519308253&single=true&output=csv";
   const experientialUrl =
@@ -494,6 +548,10 @@ $(document).ready(function () {
         $(".dt-input").val(searchTerm).trigger("input");
         facultyTable.page.len(6).draw();
       });
+    });
+
+    $(".controls__search").on("keyup", function () {
+      $(".dataTable").DataTable().search(this.value).draw();
     });
   }
 
