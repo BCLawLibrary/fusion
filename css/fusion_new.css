@@ -247,6 +247,7 @@ h3 {
 
 .faculty-image img {
   width: 100%;
+  height: 200px;
 }
 
 .faculty-name {
@@ -347,6 +348,14 @@ h3 {
   .controls__dropdown-menu {
     grid-template-columns: 1fr 1fr 1fr;
   }
+  .faculty-image img {
+    max-width: 150px;
+    min-width: 125px;
+    height: 150px;
+  }
+  .faculty-title {
+    padding: 0em 0.5em;
+  }
 }
 
 @media screen and (max-width: 767px) {
@@ -355,6 +364,10 @@ h3 {
   }
   .fusion__columns {
     grid-template-columns: 1fr;
+  }
+  .faculty-image img {
+    width: 100%;
+    height: 175px;
   }
 }
 

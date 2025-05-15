@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="./js/jquery-3.7.1.js"></script>
+    <script src="./js/jquery-ui.js"></script>
+    <script src="./js/papaparse.min.js"></script>
+    <script src="./js/datatables.min.js"></script>
+    <script src="./js/dataTables.rowGroup.min.js"></script>
+    <script src="./js/fusion-acfac.js"></script>
+    <link rel="stylesheet" type="text/css" href="./css/fusion-acfac.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="bc-text parbase section">
+      <div class="text-new content none side-small">
+        <p>&nbsp;</p>
+        <h2>
+          <b><span class="black">Explore</span></b>
+          <span class="maroon">Academics &amp; Faculty</span>
+        </h2>
+      </div>
+    </div>
+    <div id="fusion">
+      <div class="fusion__controls">
+        <ul class="fusion__tabs">
+          <li class="fusion__area" id="Administrative & Government Law">
+            ADMINISTRATIVE LAW<i class="fa-solid fa-chevron-down"></i>
+          </li>
+          <li class="fusion__area" id="Business Law">
+            BUSINESS LAW<i class="fa-solid fa-chevron-down"></i>
+          </li>
+          <li class="fusion__area" id="Constitutional Law">
+            CONSTITUTIONAL LAW<i class="fa-solid fa-chevron-down"></i>
+          </li>
+          <li class="fusion__area" id="Criminal Law & Procedure">
+            CRIMINAL LAW<i class="fa-solid fa-chevron-down"></i>
+          </li>
+          <li class="fusion__area" id="Intellectual Property & Technology Law">
+            INTELLECTUAL PROPERTY<i class="fa-solid fa-chevron-down"></i>
+          </li>
+          <li class="fusion__area" id="Tax Law">
+            TAX LAW<i class="fa-solid fa-chevron-down"></i>
+          </li>
+          <li class="fusion__more" id="fusion-more">
+            <a
+              href="https://www.bc.edu/bc-web/schools/law/academics-faculty/fusion-search.html"
+              >MORE<i class="fa-solid fa-chevron-right"></i
+            ></a>
+          </li>
+        </ul>
+      </div>
+      <div class="fusion__display">
+        <div class="fusion__tables">
+          <div class="fusion__table fusion__table--faculty">
+            <div class="table__title">
+              <h3>Faculty</h3>
+            </div>
+
+            <div class="fusion__loading">
+              <img src="loading.gif" alt="Loading..." />
+            </div>
+
+            <table class="fusion__table-content" id="faculty-table"></table>
+          </div>
+
+          <div class="fusion__table fusion__table--publications">
+            <div class="table__title">
+              <h3>Scholarship</h3>
+            </div>
+            <div class="fusion__loading">
+              <img src="loading.gif" alt="Loading..." />
+            </div>
+            <table class="fusion__table-content" id="pubs-table"></table>
+          </div>
+
+          <div class="fusion__table fusion__table--courses">
+            <div class="table__title">
+              <h3>Courses</h3>
+            </div>
+            <div class="fusion__loading">
+              <img src="loading.gif" alt="Loading..." />
+            </div>
+            <table class="fusion__table-content" id="courses-table"></table>
+          </div>
+
+          <div class="fusion__table fusion__table--experiential">
+            <div class="table__title">
+              <h3>Experiential Learning Opportunities</h3>
+            </div>
+            <div class="fusion__loading">
+              <img src="loading.gif" alt="Loading..." />
+            </div>
+            <table
+              class="fusion__table-content"
+              id="experiential-table"
+            ></table>
+          </div>
+        </div>
+        <div class="fusion__bottom">
+          <div class="fusion__find-more">
+            <a class="fusion__gold-button" href="">Find more in</a>
+          </div>
+          <a href="#" class="fusion__close"
+            ><i class="fa-solid fa-xmark"></i
+          ></a>
+        </div>
+      </div>
+    </div>
+    <div class="bc-image parbase section">
+      <section
+        id="_content_bc_web_schools_law_academics_faculty_jcr_content_bottompar_bc_image"
+        class="image-new leftBottom"
+      >
+        <div data-picture="" data-alt="Professor and student meeting">
+          <div
+            data-src="bc.edu/content/bc-web/schools/law/academics-faculty/jcr:content/bottompar/bc_image/image.transform/banner-small/image.jpg"
+            data-media="(min-width: 1px)"
+          ></div>
+          <div
+            data-src="bc.edu/content/bc-web/schools/law/academics-faculty/jcr:content/bottompar/bc_image/image.transform/banner-medium/image.jpg"
+            data-media="(min-width: 480px)"
+          ></div>
+          <div
+            data-src="/content/bc-web/schools/law/academics-faculty/jcr:content/bottompar/bc_image/image.transform/banner-full/image.jpg"
+            data-media="(min-width: 992px)"
+          ></div>
+          <noscript>
+            <img
+              src="https://www.bc.edu/content/bc-web/schools/law/academics-faculty/_jcr_content/bottompar/bc_image/image.transform/banner-full/image.jpg"
+              alt="Professor and student meeting"
+            />
+          </noscript>
+          <img
+            alt="Professor and student meeting"
+            src="https://www.bc.edu/content/bc-web/schools/law/academics-faculty/jcr:content/bottompar/bc_image/image.transform/banner-full/image.jpg"
+          />
+        </div>
+
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12 pull-right">
+              <div class="content" style="background: rgba(0, 0, 0, 0.5)">
+                <p>
+                  Search across faculty, courses, publications,&nbsp;and
+                  experiential learning opportunities,&nbsp;sorted by specific
+                  disciplines.
+                </p>
+                <p>&nbsp;</p>
+                <p>
+                  <span class="btn btn-default btn-maroon"
+                    ><a
+                      adhocenable="false"
+                      href="https://www.bc.edu/content/bc-web/schools/law/academics-faculty/fusion-search.html"
+                      >Fusion Search</a
+                    ></span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,169 @@
+html {
+  box-sizing: border-box;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif;
+}
+
+*,
+*:before,
+*:after {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+}
+
+.fusion__tabs {
+  display: flex;
+  list-style-type: none;
+}
+
+.fusion__display {
+  background-color: #726158;
+  z-index: 1;
+  position: absolute;
+  color: #fff;
+  padding: 20px;
+  width: 100%;
+  display: none;
+}
+
+.fusion__loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2em;
+}
+.fusion__loading img {
+  width: 2em;
+}
+
+.fusion__area,
+.fusion__more {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 3em;
+  padding: 1em;
+  font-weight: 600;
+  font-size: 0.9em;
+  color: #555;
+}
+
+.fusion__area .fa-chevron-down,
+.fusion__more .fa-chevron-right {
+  margin-left: 0.5em;
+  color: #ce0303;
+}
+
+.fusion__more a {
+  color: #245c8a;
+  text-decoration: none;
+}
+
+.fusion__more a:hover {
+  text-decoration: underline;
+}
+
+.fusion__tables {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  column-gap: 2em;
+}
+
+.fusion__tables h3 {
+  line-height: 1.5;
+  color: #dfddcf;
+  font-size: 1.3em;
+  font-weight: 400;
+}
+
+.dt-column-title {
+  display: none;
+}
+
+.fusion__table a {
+  color: white;
+  text-decoration: none;
+}
+
+.fusion__table a:hover {
+  text-decoration: underline;
+}
+
+.dt-search {
+  display: none;
+}
+
+#faculty-table tbody {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  row-gap: 1em;
+  column-gap: 1em;
+}
+
+#faculty-table img {
+  max-width: 100%;
+}
+
+#faculty-table .faculty-name {
+  font-size: 0.75em;
+}
+
+#pubs-table tbody {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1em;
+  line-height: 1.6em;
+}
+
+#pubs-table .work-title {
+  font-weight: bold;
+}
+
+#courses-table .course-title {
+  line-height: 1.6em;
+}
+
+#experiential-table thead {
+  display: none;
+}
+
+#experiential-table th {
+  display: flex;
+  justify-content: left;
+  font-size: 1.2em;
+  font-weight: 600;
+  margin-bottom: 1em;
+}
+
+#experiential-table .dtrg-group:not(:first-child) th {
+  margin-top: 1em;
+}
+
+.fusion__bottom {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+#experiential-table .experiential-title {
+  line-height: 1.6em;
+}
+
+.fusion__gold-button {
+  background-color: #dccaa0;
+  color: white;
+  font-size: 0.9em;
+  padding: 0.5em 1em;
+  border-radius: 0.5em;
+  text-decoration: none;
+  transition-duration: 0.2s;
+}
+
+.fusion__gold-button:hover {
+  background-color: #b29d6c;
+}
+
+.fusion__close {
+  color: #b29d6c;
+  font-size: 2em;
+}
