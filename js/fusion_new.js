@@ -334,11 +334,11 @@ function formatFaculty(rowData) {
     image = "https://bc.edu/content/dam/bc1/schools/law/js/fusion/unknown.jpg";
   }
   return `<div class="faculty-box">
-            <a class="faculty-image ${status}" href="${profile}">
+            <a class="faculty-image ${status}" target="_blank" rel="noopener noreferrer" href="${profile}">
               <img src="${image}" />
               <div class="faculty-title ${facultyTitleClass}">${status} faculty</div>
             </a>
-            <a class="faculty-name ${facultyNameClass}" href="${profile}">
+            <a target="_blank" rel="noopener noreferrer" class="faculty-name ${facultyNameClass}" href="${profile}">
               ${name}
             </a>
           </div>`;
@@ -439,7 +439,7 @@ function formatPublication(rowData) {
     }
     // Make title into link if URL is present
     if (url) {
-      title = `<div class="work-title"><a href="${url}">${title}</a> <span class="fa-solid fa-square-arrow-up-right"></span></div>`;
+      title = `<div class="work-title"><a target="_blank" rel="noopener noreferrer" href="${url}">${title}</a> <span class="fa-solid fa-square-arrow-up-right"></span></div>`;
     } else {
       title = `<div class="work-title">${title}</div>`;
     }
@@ -553,6 +553,12 @@ $(document).ready(function () {
     $(".controls__search").on("keyup", function () {
       $(".dataTable").DataTable().search(this.value).draw();
     });
+
+    areasList = Array.from(dropdownElements, (el) => el.innerText);
+    currentHash = window.location.hash.replace("#", "").replaceAll("%20", " ");
+    if (areasList.includes(currentHash)) {
+      $(".dt-input").val(currentHash).trigger("input");
+    }
   }
 
   main();

@@ -13,7 +13,9 @@ html {
 
 .fusion__tabs {
   display: flex;
+  flex-wrap: wrap;
   list-style-type: none;
+  margin: 0;
 }
 
 .fusion__display {
@@ -42,13 +44,15 @@ html {
   justify-content: center;
   align-items: center;
   height: 3em;
-  padding: 1em;
+  padding: 0.8em 1.6em;
   font-weight: 600;
   font-size: 0.9em;
   color: #555;
+  cursor: pointer;
 }
 
 .fusion__area .fa-chevron-down,
+.fusion__area .fa-chevron-up,
 .fusion__more .fa-chevron-right {
   margin-left: 0.5em;
   color: #ce0303;
@@ -139,17 +143,27 @@ html {
   margin-top: 1em;
 }
 
-.fusion__bottom {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-}
-
 #experiential-table .experiential-title {
   line-height: 1.6em;
 }
 
+.fusion__bottom {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 1em;
+  column-gap: 1em;
+}
+
+.fusion__find-more {
+  flex-shrink: 1;
+  min-width: 0;
+  white-space: nowrap;
+}
+
 .fusion__gold-button {
+  display: block;
   background-color: #dccaa0;
   color: white;
   font-size: 0.9em;
@@ -157,6 +171,8 @@ html {
   border-radius: 0.5em;
   text-decoration: none;
   transition-duration: 0.2s;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .fusion__gold-button:hover {
@@ -166,4 +182,45 @@ html {
 .fusion__close {
   color: #b29d6c;
   font-size: 2em;
+  background-color: transparent;
+  border: 0px;
+  flex-shrink: 0;
+}
+
+@media screen and (max-width: 1199px) {
+  .fusion__tables {
+    grid-template-columns: 1fr 1fr;
+  }
+  .fusion__table--courses,
+  .fusion__table--experiential {
+    margin-top: 1em;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .fusion__tables {
+    grid-template-columns: 1fr;
+  }
+
+  .fusion__table.fusion__table h3 {
+    font-size: 1.5em;
+  }
+
+  .fusion__table:not(:first-child) {
+    margin-top: 1em;
+  }
+
+  .fusion__tabs {
+    flex-direction: column;
+  }
+}
+
+@media screen and (max-width: 575px) {
+  #faculty-table tbody {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .fusion__tabs li {
+    padding-left: 2.5em; /* already 1.5em padding so add 1 to balance */
+  }
 }

@@ -185,10 +185,10 @@ function formatFaculty(rowData) {
     image = "https://bc.edu/content/dam/bc1/schools/law/js/fusion/unknown.jpg";
   }
   return `<div class="faculty-box">
-            <a class="faculty-image" href="${profile}">
+            <a class="faculty-image" target="_blank" rel="noopener noreferrer" href="${profile}">
               <img src="${image}" />
             </a>
-            <a class="faculty-name" href="${profile}">
+            <a class="faculty-name" target="_blank" rel="noopener noreferrer" href="${profile}">
               ${name}
             </a>
           </div>`;
@@ -203,7 +203,7 @@ function formatCourse(rowData) {
 function formatExperiential(rowData) {
   let [title, category, area, categorySortOrder, url, description] = rowData;
   if (url !== "") {
-    return `<div class="experiential-title"><a href="${url}">${title}</a></div>`;
+    return `<div class="experiential-title"><a target="_blank" rel="noopener noreferrer" href="${url}">${title} <i class="fa-solid fa-square-arrow-up-right"></i></a></div>`;
   } else {
     return `<div class="experiential-title">${title}</div>`;
   }
@@ -243,7 +243,7 @@ function formatPublication(rowData) {
     }
     // Make title into link if URL is present
     if (url) {
-      title = `<div class="work-title"><a href="${url}">${title}</a> <span class="fa-solid fa-square-arrow-up-right"></span></div>`;
+      title = `<div class="work-title"><a target="_blank" rel="noopener noreferrer" href="${url}">${title}</a> <i class="fa-solid fa-square-arrow-up-right"></i></div>`;
     } else {
       title = `<div class="work-title">${title}</div>`;
     }
@@ -341,23 +341,33 @@ $(document).ready(function () {
 
     const tabs = document.querySelectorAll(".fusion__area");
 
-    tabs.forEach((element) => {
-      element.addEventListener("click", function () {
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", function () {
         var searchTerm = $(this).attr("id");
         $(".dt-input").val(searchTerm).trigger("input");
         $(".fusion__display").show();
-        tabs.forEach((element) => {
-          element.style.backgroundColor = "white";
-          element.style.color = "#555";
+
+        // reset styling on every tab
+        tabs.forEach((everyTab) => {
+          everyTab.style.backgroundColor = "white";
+          everyTab.style.color = "#555";
+
+          const everyIcon = everyTab.querySelector("i");
+          everyIcon.classList.remove("fa-chevron-up");
+          everyIcon.classList.add("fa-chevron-down");
         });
-        element.style.backgroundColor = "#726158";
-        element.style.color = "white";
+
+        tab.style.backgroundColor = "#726158";
+        tab.style.color = "white";
+        const icon = tab.querySelector("i");
+        icon.classList.remove("fa-chevron-down");
+        icon.classList.add("fa-chevron-up");
 
         var fusionButton = document.getElementsByClassName(
           "fusion__gold-button"
         )[0];
-        fusionButton.href = `https://www.bc.edu/content/bc-web/schools/law/test/fusion-search?key=${element.id}`;
-        fusionButton.innerHTML = `Find More in ${element.id}`;
+        fusionButton.href = `https://www.bc.edu/content/bc-web/schools/law/test/fusion-search#${tab.id}`;
+        fusionButton.innerHTML = `Find More in ${tab.id}`;
       });
     });
 
@@ -365,9 +375,9 @@ $(document).ready(function () {
       .querySelector(".fusion__close")
       .addEventListener("click", function () {
         $(".fusion__display").hide();
-        tabs.forEach((element) => {
-          element.style.backgroundColor = "white";
-          element.style.color = "#555";
+        tabs.forEach((tab) => {
+          tab.style.backgroundColor = "white";
+          tab.style.color = "#555";
         });
       });
   }
