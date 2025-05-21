@@ -51,6 +51,16 @@ html {
   cursor: pointer;
 }
 
+.fusion__area.fusion__open {
+  background-color: #726158;
+  color: white;
+}
+
+.fusion__area.fusion__closed {
+  color: #726158;
+  background-color: white;
+}
+
 .fusion__area .fa-chevron-down,
 .fusion__area .fa-chevron-up,
 .fusion__more .fa-chevron-right {
@@ -185,6 +195,7 @@ html {
   background-color: transparent;
   border: 0px;
   flex-shrink: 0;
+  cursor: pointer;
 }
 
 @media screen and (max-width: 1199px) {

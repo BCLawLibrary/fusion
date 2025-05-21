@@ -282,7 +282,7 @@ function formatPublication(rowData) {
   };
 
   const formatYear = (year) => {
-    return year ? ` (${year.replace("*", "")})` : "";
+    return year ? ` (${year.replaceAll("*", "")})` : "";
   };
 
   const formatNotes = (notes) => {
@@ -337,49 +337,51 @@ $(document).ready(function () {
     experientialTable = initializeExperientialTable(experientialData);
     pubsTable = initializePubsTable(pubsData);
 
+    // Using jQuery for this
     $(".fusion__loading").hide();
 
-    const tabs = document.querySelectorAll(".fusion__area");
+    // helper functions for tabs
+    function closeTab($tab) {
+      $tab.removeClass("fusion__open").addClass("fusion__closed");
+      $tab.find("i").removeClass("fa-chevron-up").addClass("fa-chevron-down");
+    }
 
-    tabs.forEach((tab) => {
-      tab.addEventListener("click", function () {
-        var searchTerm = $(this).attr("id");
+    function openTab($tab) {
+      $tab.removeClass("fusion__closed").addClass("fusion__open");
+      $tab.find("i").removeClass("fa-chevron-down").addClass("fa-chevron-up");
+    }
+
+    const $tabs = $(".fusion__area");
+
+    $tabs.on("click", function () {
+      const $this = $(this);
+      var searchTerm = $(this).attr("id");
+
+      if ($this.hasClass("fusion__closed")) {
         $(".dt-input").val(searchTerm).trigger("input");
-        $(".fusion__display").show();
-
-        // reset styling on every tab
-        tabs.forEach((everyTab) => {
-          everyTab.style.backgroundColor = "white";
-          everyTab.style.color = "#555";
-
-          const everyIcon = everyTab.querySelector("i");
-          everyIcon.classList.remove("fa-chevron-up");
-          everyIcon.classList.add("fa-chevron-down");
+        $tabs.each(function () {
+          closeTab($(this));
         });
-
-        tab.style.backgroundColor = "#726158";
-        tab.style.color = "white";
-        const icon = tab.querySelector("i");
-        icon.classList.remove("fa-chevron-down");
-        icon.classList.add("fa-chevron-up");
-
-        var fusionButton = document.getElementsByClassName(
-          "fusion__gold-button"
-        )[0];
-        fusionButton.href = `https://www.bc.edu/content/bc-web/schools/law/test/fusion-search#${tab.id}`;
-        fusionButton.innerHTML = `Find More in ${tab.id}`;
-      });
+        openTab($this);
+        $(".fusion__display").show();
+      } else if ($this.hasClass("fusion__open")) {
+        $(".fusion__display").hide();
+        closeTab($this);
+      }
+      const $fusionButton = $(".fusion__gold-button").first();
+      $fusionButton.attr(
+        "href",
+        `https://www.bc.edu/content/bc-web/schools/law/test/fusion-search#${searchTerm}`
+      );
+      $fusionButton.html(`Find More in ${searchTerm}`);
     });
 
-    document
-      .querySelector(".fusion__close")
-      .addEventListener("click", function () {
-        $(".fusion__display").hide();
-        tabs.forEach((tab) => {
-          tab.style.backgroundColor = "white";
-          tab.style.color = "#555";
-        });
+    $(".fusion__close").on("click", function () {
+      $(".fusion__display").hide();
+      $tabs.each(function () {
+        closeTab($(this));
       });
+    });
   }
 
   main();
