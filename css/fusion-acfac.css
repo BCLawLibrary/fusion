@@ -187,6 +187,7 @@ html {
 
 .fusion__gold-button:hover {
   background-color: #b29d6c;
+  color: white;
 }
 
 .fusion__close {

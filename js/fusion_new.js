@@ -60,7 +60,7 @@ function initializeFacultyTable(facultyData) {
       lengthMenu: "Showing _MENU_ faculty",
       info: `<span class="table-info"
               ><p class="data-info">Showing _END_ of _TOTAL_</p>
-              <a id="facultyAll" tabindex="0">
+              <a id="facultyAll" class="show-all" tabindex="0">
                 All faculty
                 <i class="fa-solid fa-caret-down"></i>
               </a>
@@ -73,14 +73,23 @@ function initializeFacultyTable(facultyData) {
     },
     initComplete: function () {
       var api = this.api();
-      var more = $("<a>")
-        .addClass("showmore publications-showmore")
-        .html(`Show more <i class="fa-solid fa-caret-down"></i>`);
-      $("#faculty-table_wrapper").append(more);
-      $(".publications-showmore").click(function () {
+      var bottomControls = $("<div>").addClass("bottom-controls").html(`
+        <a class="showmore faculty-showmore">Show more <i class="fa-solid fa-caret-down"></i></a>
+        <a class="showmore faculty-showless" style="">Show fewer <i class="fa-solid fa-caret-up"></i></a>
+      `);
+      $("#faculty-table_wrapper").append(bottomControls);
+
+      $(".faculty-showless").click(function () {
         var currentLength = api.page.len();
-        facultyTable.page.len(currentLength + 6).draw();
+        api.page.len(currentLength - 6).draw();
       });
+
+      $(".faculty-showmore").click(function () {
+        var currentLength = api.page.len();
+        api.page.len(currentLength + 6).draw();
+      });
+
+      $(".faculty-showless").hide();
     },
     drawCallback: function () {
       $("#facultyAll").click(function () {
@@ -94,6 +103,20 @@ function initializeFacultyTable(facultyData) {
         $("#facultyAll").show();
         $("#facultyFewer").hide();
       });
+
+      var api = this.api();
+      var tableLength = api.rows({ filter: "applied" }).count();
+      if (api.page.len() >= tableLength) {
+        $(".faculty-showmore").hide();
+      } else {
+        $(".faculty-showmore").show();
+      }
+
+      if (api.page.len() <= 6 || tableLength <= 6) {
+        $(".faculty-showless").hide();
+      } else {
+        $(".faculty-showless").show();
+      }
     },
   });
 
@@ -122,19 +145,30 @@ function initializeCoursesTable(coursesData) {
     pageLength: 6,
     language: {
       lengthMenu: "Showing _MENU_ faculty",
-      info: "<span class='table-info'><p class='data-info'>Showing _END_ of _TOTAL_ </p><a id='courses-all' tabindex='0'>All courses <i class='fa-solid fa-caret-down'></i></a><a id='courses-fewer' class='fewer' tabindex='0'>Fewer courses <i class='fa-solid fa-caret-up'></i></a></span>",
+      info: `<span class='table-info'><p class='data-info'>Showing _END_ of _TOTAL_ </p><a id='courses-all' class='show-all' tabindex='0'>All courses <i class='fa-solid fa-caret-down'></i></a><a id='courses-fewer' class='fewer' tabindex='0'>Fewer courses <i class='fa-solid fa-caret-up'></i></a></span>`,
       infoFiltered: "",
     },
+
     initComplete: function () {
       var api = this.api();
-      var more = $("<a>")
-        .addClass("showmore courses-showmore")
-        .html(`Show more <i class="fa-solid fa-caret-down"></i>`);
-      $("#courses-table_wrapper").append(more);
+      var bottomControls = $("<div>").addClass("bottom-controls").html(`
+        <a class="showmore courses-showmore">Show more <i class="fa-solid fa-caret-down"></i></a>
+        <a class="showmore courses-showless" style="">Show fewer <i class="fa-solid fa-caret-up"></i></a>
+      `);
+
+      $("#courses-table_wrapper").append(bottomControls);
+
       $(".courses-showmore").click(function () {
         var currentLength = api.page.len();
-        coursesTable.page.len(currentLength + 6).draw();
+        api.page.len(currentLength + 6).draw();
       });
+
+      $(".courses-showless").click(function () {
+        var currentLength = api.page.len();
+        api.page.len(currentLength - 6).draw();
+      });
+
+      $(".courses-showless").hide();
     },
     drawCallback: function () {
       $("#courses-all").click(function () {
@@ -148,6 +182,20 @@ function initializeCoursesTable(coursesData) {
         $("#courses-all").show();
         $("#courses-fewer").hide();
       });
+
+      var api = this.api();
+      var tableLength = api.rows({ filter: "applied" }).count();
+      if (api.page.len() >= tableLength) {
+        $(".courses-showmore").hide();
+      } else {
+        $(".courses-showmore").show();
+      }
+
+      if (api.page.len() <= 6 || tableLength <= 6) {
+        $(".courses-showless").hide();
+      } else {
+        $(".courses-showless").show();
+      }
     },
   });
   initCourseToggle();
@@ -188,7 +236,7 @@ function initializeExperientialTable(experientialData) {
       lengthMenu: "Showing _MENU_ faculty",
       info: `<span class="table-info">
               <p class="data-info">Showing _END_ of _TOTAL_</p>
-              <a id="experiential-all" tabindex="0">
+              <a id="experiential-all" class="show-all" tabindex="0">
                 All opportunities
                 <i class="fa-solid fa-caret-down"></i>
               </a>
@@ -201,14 +249,22 @@ function initializeExperientialTable(experientialData) {
     },
     initComplete: function () {
       var api = this.api();
-      var more = $("<a>")
-        .addClass("showmore experiential-showmore")
-        .html(`Show more <i class="fa-solid fa-caret-down"></i>`);
-      $("#experiential-table_wrapper").append(more);
+      var bottomControls = $("<div>").addClass("bottom-controls").html(`
+        <a class="showmore experiential-showmore">Show more <i class="fa-solid fa-caret-down"></i></a>
+        <a class="showmore experiential-showless" style="">Show fewer <i class="fa-solid fa-caret-up"></i></a>
+      `);
+
+      $("#experiential-table_wrapper").append(bottomControls);
       $(".experiential-showmore").click(function () {
         var currentLength = api.page.len();
-        experientialTable.page.len(currentLength + 6).draw();
+        api.page.len(currentLength + 6).draw();
       });
+      $(".experiential-showless").click(function () {
+        var currentLength = api.page.len();
+        api.page.len(currentLength - 6).draw();
+      });
+
+      $(".experiential-showless").hide();
     },
     drawCallback: function () {
       $("#experiential-all").click(function () {
@@ -222,6 +278,20 @@ function initializeExperientialTable(experientialData) {
         $("#experiential-all").show();
         $("#experiential-fewer").hide();
       });
+
+      var api = this.api();
+      var tableLength = api.rows({ filter: "applied" }).count();
+      if (api.page.len() >= tableLength) {
+        $(".experiential-showmore").hide();
+      } else {
+        $(".experiential-showmore").show();
+      }
+
+      if (api.page.len() <= 6 || tableLength <= 6) {
+        $(".experiential-showless").hide();
+      } else {
+        $(".experiential-showless").show();
+      }
     },
   });
 
@@ -271,11 +341,11 @@ function initializePubsTable(pubsData) {
               <p class='data-info'>
                 Showing _END_ of _TOTAL_ 
               </p>
-              <a id='pubs-all' tabindex='0'>
+              <a id='publications-all' class="show-all" tabindex='0'>
                 All publications
                 <i class='fa-solid fa-caret-down'></i>
               </a>
-              <a id='pubs-fewer' class='fewer' tabindex='0'>
+              <a id='publications-fewer' class='fewer' tabindex='0'>
                 Fewer publications 
                 <i class='fa-solid fa-caret-up'></i>
               </a>
@@ -284,27 +354,49 @@ function initializePubsTable(pubsData) {
     },
     initComplete: function () {
       var api = this.api();
-      var more = $("<a>")
-        .addClass("showmore pubs-showmore")
-        .html(`Show more <i class="fa-solid fa-caret-down"></i>`);
-      $("#pubs-table_wrapper").append(more);
-      $(".pubs-showmore").click(function () {
+      var bottomControls = $("<div>").addClass("bottom-controls").html(`
+        <a class="showmore publications-showmore">Show more <i class="fa-solid fa-caret-down"></i></a>
+        <a class="showmore publications-showless" style="">Show fewer <i class="fa-solid fa-caret-up"></i></a>
+      `);
+
+      $("#pubs-table_wrapper").append(bottomControls);
+      $(".publications-showmore").click(function () {
         var currentLength = api.page.len();
-        pubsTable.page.len(currentLength + 6).draw();
+        api.page.len(currentLength + 6).draw();
       });
-    },
-    drawCallback: function () {
-      $("#pubs-all").click(function () {
-        pubsTable.page.len(-1).draw();
-        $("#pubs-all").hide();
-        $("#pubs-fewer").show();
+      $(".publications-showless").click(function () {
+        var currentLength = api.page.len();
+        api.page.len(currentLength - 6).draw();
       });
 
-      $("#pubs-fewer").click(function () {
-        pubsTable.page.len(6).draw();
-        $("#pubs-all").show();
-        $("#pubs-fewer").hide();
+      $(".publications-showless").hide();
+    },
+    drawCallback: function () {
+      $("#publications-all").click(function () {
+        api.page.len(-1).draw();
+        $("#publications-all").hide();
+        $("#publications-fewer").show();
       });
+
+      $("#publications-fewer").click(function () {
+        api.page.len(6).draw();
+        $("#publications-all").show();
+        $("#publications-fewer").hide();
+      });
+
+      var api = this.api();
+      var tableLength = api.rows({ filter: "applied" }).count();
+      if (api.page.len() >= tableLength) {
+        $(".publications-showmore").hide();
+      } else {
+        $(".publications-showmore").show();
+      }
+
+      if (api.page.len() <= 6 || tableLength <= 6) {
+        $(".publications-showless").hide();
+      } else {
+        $(".publications-showless").show();
+      }
     },
   });
 

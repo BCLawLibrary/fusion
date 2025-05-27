@@ -266,12 +266,16 @@ h3 {
   background: #edeae3;
   color: rgb(85, 85, 85);
   font-size: 0.8em;
-  padding: 0 0.8em;
+  padding: 0.3em 0.8em;
   border: 1px solid #cccccc;
   text-decoration: none;
   text-transform: uppercase;
-  width: fit-content;
   cursor: pointer;
+  
+}
+
+.showmore:hover {
+  color: rgb(85, 85, 85);
 }
 
 .invisible {

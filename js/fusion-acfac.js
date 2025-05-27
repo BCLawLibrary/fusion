@@ -371,7 +371,7 @@ $(document).ready(function () {
       const $fusionButton = $(".fusion__gold-button").first();
       $fusionButton.attr(
         "href",
-        `https://www.bc.edu/content/bc-web/schools/law/test/fusion-search#${searchTerm}`
+        `https://www.bc.edu/bc-web/schools/law/academics-faculty/fusion-search#${searchTerm}`
       );
       $fusionButton.html(`Find More in ${searchTerm}`);
     });
