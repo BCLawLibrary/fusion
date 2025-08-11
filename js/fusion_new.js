@@ -60,11 +60,11 @@ function initializeFacultyTable(facultyData) {
       lengthMenu: "Showing _MENU_ faculty",
       info: `<span class="table-info"
               ><p class="data-info">Showing _END_ of _TOTAL_</p>
-              <a id="facultyAll" class="show-all" tabindex="0">
+              <a id="faculty-all" class="show-all" tabindex="0">
                 All faculty
                 <i class="fa-solid fa-caret-down"></i>
               </a>
-              <a id="facultyFewer" class="fewer" tabindex="0">
+              <a id="faculty-fewer" class="fewer" tabindex="0">
                 Fewer faculty
                 <i class="fa-solid fa-caret-up"></i>
               </a>
@@ -75,47 +75,67 @@ function initializeFacultyTable(facultyData) {
       var api = this.api();
       var bottomControls = $("<div>").addClass("bottom-controls").html(`
         <a class="showmore faculty-showmore">Show more <i class="fa-solid fa-caret-down"></i></a>
-        <a class="showmore faculty-showless" style="">Show fewer <i class="fa-solid fa-caret-up"></i></a>
+        <a class="showmore faculty-showfewer" style="">Show fewer <i class="fa-solid fa-caret-up"></i></a>
       `);
-      $("#faculty-table_wrapper").append(bottomControls);
 
-      $(".faculty-showless").click(function () {
-        var currentLength = api.page.len();
-        api.page.len(currentLength - 6).draw();
-      });
+      $("#faculty-table_wrapper").append(bottomControls);
+      $(".faculty-showfewer").hide();
 
       $(".faculty-showmore").click(function () {
         var currentLength = api.page.len();
-        api.page.len(currentLength + 6).draw();
+        var totalRows = api.rows({ filter: "applied" }).count();
+        if (currentLength === -1) {
+          return;
+        }
+        if (currentLength + 6 < totalRows) {
+          api.page.len(currentLength + 6).draw();
+        } else {
+          api.page.len(-1).draw();
+        }
       });
 
-      $(".faculty-showless").hide();
+      $(".faculty-showfewer").click(function () {
+        var currentLength = api.page.len();
+        var totalRows = api.rows({ filter: "applied" }).count();
+
+        if (currentLength === -1) {
+          var newLen = Math.max(Math.floor((totalRows - 1) / 6) * 6, 6);
+          api.page.len(newLen).draw();
+        } else if (currentLength > 6) {
+          api.page.len(currentLength - 6).draw();
+        }
+      });
     },
     drawCallback: function () {
-      $("#facultyAll").click(function () {
-        facultyTable.page.len(-1).draw();
-        $("#facultyAll").hide();
-        $("#facultyFewer").show();
-      });
+      $("#faculty-all")
+        .off("click")
+        .on("click", function () {
+          facultyTable.page.len(-1).draw();
+          $("#faculty-all").hide();
+          $("#faculty-fewer").show();
+        });
 
-      $("#facultyFewer").click(function () {
-        facultyTable.page.len(6).draw();
-        $("#facultyAll").show();
-        $("#facultyFewer").hide();
-      });
-
+      $("#faculty-fewer")
+        .off("click")
+        .on("click", function () {
+          facultyTable.page.len(6).draw();
+          $("#faculty-all").show();
+          $("#faculty-fewer").hide();
+        });
       var api = this.api();
       var tableLength = api.rows({ filter: "applied" }).count();
-      if (api.page.len() >= tableLength) {
+      if (api.page.len() === -1) {
         $(".faculty-showmore").hide();
+        $(".faculty-showfewer").show();
+      } else if (api.page.len() <= 6) {
+        $(".faculty-showmore").show();
+        $(".faculty-showfewer").hide();
+      } else if (api.page.len() >= tableLength) {
+        $(".faculty-showmore").hide();
+        $(".faculty-showfewer").show();
       } else {
         $(".faculty-showmore").show();
-      }
-
-      if (api.page.len() <= 6 || tableLength <= 6) {
-        $(".faculty-showless").hide();
-      } else {
-        $(".faculty-showless").show();
+        $(".faculty-showfewer").show();
       }
     },
   });
@@ -157,43 +177,64 @@ function initializeCoursesTable(coursesData) {
       `);
 
       $("#courses-table_wrapper").append(bottomControls);
+      $(".courses-showless").hide();
 
       $(".courses-showmore").click(function () {
         var currentLength = api.page.len();
-        api.page.len(currentLength + 6).draw();
+        var totalRows = api.rows({ filter: "applied" }).count();
+        if (currentLength === -1) {
+          return;
+        }
+        if (currentLength + 6 < totalRows) {
+          api.page.len(currentLength + 6).draw();
+        } else {
+          api.page.len(-1).draw();
+        }
       });
 
       $(".courses-showless").click(function () {
         var currentLength = api.page.len();
-        api.page.len(currentLength - 6).draw();
-      });
+        var totalRows = api.rows({ filter: "applied" }).count();
 
-      $(".courses-showless").hide();
+        if (currentLength === -1) {
+          // If showing all, go to the largest multiple of 6 less than totalRows, or 6
+          var newLen = Math.max(Math.floor((totalRows - 1) / 6) * 6, 6);
+          api.page.len(newLen).draw();
+        } else if (currentLength > 6) {
+          api.page.len(currentLength - 6).draw();
+        }
+      });
     },
     drawCallback: function () {
-      $("#courses-all").click(function () {
-        coursesTable.page.len(-1).draw();
-        $("#courses-all").hide();
-        $("#courses-fewer").show();
-      });
+      $("#courses-all")
+        .off("click")
+        .on("click", function () {
+          coursesTable.page.len(-1).draw();
+          $("#courses-all").hide();
+          $("#courses-fewer").show();
+        });
 
-      $("#courses-fewer").click(function () {
-        coursesTable.page.len(6).draw();
-        $("#courses-all").show();
-        $("#courses-fewer").hide();
-      });
+      $("#courses-fewer")
+        .off("click")
+        .on("click", function () {
+          coursesTable.page.len(6).draw();
+          $("#courses-all").show();
+          $("#courses-fewer").hide();
+        });
 
       var api = this.api();
       var tableLength = api.rows({ filter: "applied" }).count();
-      if (api.page.len() >= tableLength) {
+      if (api.page.len() === -1) {
         $(".courses-showmore").hide();
+        $(".courses-showless").show();
+      } else if (api.page.len() <= 6) {
+        $(".courses-showmore").show();
+        $(".courses-showless").hide();
+      } else if (api.page.len() >= tableLength) {
+        $(".courses-showmore").hide();
+        $(".courses-showless").show();
       } else {
         $(".courses-showmore").show();
-      }
-
-      if (api.page.len() <= 6 || tableLength <= 6) {
-        $(".courses-showless").hide();
-      } else {
         $(".courses-showless").show();
       }
     },
@@ -255,41 +296,63 @@ function initializeExperientialTable(experientialData) {
       `);
 
       $("#experiential-table_wrapper").append(bottomControls);
+      $(".experiential-showless").hide();
+
       $(".experiential-showmore").click(function () {
         var currentLength = api.page.len();
-        api.page.len(currentLength + 6).draw();
+        var totalRows = api.rows({ filter: "applied" }).count();
+        if (currentLength === -1) {
+          return;
+        }
+        if (currentLength + 6 < totalRows) {
+          api.page.len(currentLength + 6).draw();
+        } else {
+          api.page.len(-1).draw();
+        }
       });
+
       $(".experiential-showless").click(function () {
         var currentLength = api.page.len();
-        api.page.len(currentLength - 6).draw();
-      });
+        var totalRows = api.rows({ filter: "applied" }).count();
 
-      $(".experiential-showless").hide();
+        if (currentLength === -1) {
+          var newLen = Math.max(Math.floor((totalRows - 1) / 6) * 6, 6);
+          api.page.len(newLen).draw();
+        } else if (currentLength > 6) {
+          api.page.len(currentLength - 6).draw();
+        }
+      });
     },
     drawCallback: function () {
-      $("#experiential-all").click(function () {
-        experientialTable.page.len(-1).draw();
-        $("#experiential-all").hide();
-        $("#experiential-fewer").show();
-      });
+      $("#experiential-all")
+        .off("click")
+        .on("click", function () {
+          experientialTable.page.len(-1).draw();
+          $("#experiential-all").hide();
+          $("#experiential-fewer").show();
+        });
 
-      $("#experiential-fewer").click(function () {
-        experientialTable.page.len(6).draw();
-        $("#experiential-all").show();
-        $("#experiential-fewer").hide();
-      });
+      $("#experiential-fewer")
+        .off("click")
+        .on("click", function () {
+          experientialTable.page.len(6).draw();
+          $("#experiential-all").show();
+          $("#experiential-fewer").hide();
+        });
 
       var api = this.api();
       var tableLength = api.rows({ filter: "applied" }).count();
-      if (api.page.len() >= tableLength) {
+      if (api.page.len() === -1) {
         $(".experiential-showmore").hide();
+        $(".experiential-showless").show();
+      } else if (api.page.len() <= 6) {
+        $(".experiential-showmore").show();
+        $(".experiential-showless").hide();
+      } else if (api.page.len() >= tableLength) {
+        $(".experiential-showmore").hide();
+        $(".experiential-showless").show();
       } else {
         $(".experiential-showmore").show();
-      }
-
-      if (api.page.len() <= 6 || tableLength <= 6) {
-        $(".experiential-showless").hide();
-      } else {
         $(".experiential-showless").show();
       }
     },
@@ -360,41 +423,63 @@ function initializePubsTable(pubsData) {
       `);
 
       $("#pubs-table_wrapper").append(bottomControls);
+      $(".publications-showless").hide();
+
       $(".publications-showmore").click(function () {
         var currentLength = api.page.len();
-        api.page.len(currentLength + 6).draw();
+        var totalRows = api.rows({ filter: "applied" }).count();
+        if (currentLength === -1) {
+          return;
+        }
+        if (currentLength + 6 < totalRows) {
+          api.page.len(currentLength + 6).draw();
+        } else {
+          api.page.len(-1).draw();
+        }
       });
+
       $(".publications-showless").click(function () {
         var currentLength = api.page.len();
-        api.page.len(currentLength - 6).draw();
-      });
+        var totalRows = api.rows({ filter: "applied" }).count();
 
-      $(".publications-showless").hide();
+        if (currentLength === -1) {
+          var newLen = Math.max(Math.floor((totalRows - 1) / 6) * 6, 6);
+          api.page.len(newLen).draw();
+        } else if (currentLength > 6) {
+          api.page.len(currentLength - 6).draw();
+        }
+      });
     },
     drawCallback: function () {
-      $("#publications-all").click(function () {
-        api.page.len(-1).draw();
-        $("#publications-all").hide();
-        $("#publications-fewer").show();
-      });
+      $("#publications-all")
+        .off("click")
+        .on("click", function () {
+          api.page.len(-1).draw();
+          $("#publications-all").hide();
+          $("#publications-fewer").show();
+        });
 
-      $("#publications-fewer").click(function () {
-        api.page.len(6).draw();
-        $("#publications-all").show();
-        $("#publications-fewer").hide();
-      });
+      $("#publications-fewer")
+        .off("click")
+        .on("click", function () {
+          api.page.len(6).draw();
+          $("#publications-all").show();
+          $("#publications-fewer").hide();
+        });
 
       var api = this.api();
       var tableLength = api.rows({ filter: "applied" }).count();
-      if (api.page.len() >= tableLength) {
+      if (api.page.len() === -1) {
         $(".publications-showmore").hide();
+        $(".publications-showless").show();
+      } else if (api.page.len() <= 6) {
+        $(".publications-showmore").show();
+        $(".publications-showless").hide();
+      } else if (api.page.len() >= tableLength) {
+        $(".publications-showmore").hide();
+        $(".publications-showless").show();
       } else {
         $(".publications-showmore").show();
-      }
-
-      if (api.page.len() <= 6 || tableLength <= 6) {
-        $(".publications-showless").hide();
-      } else {
         $(".publications-showless").show();
       }
     },
